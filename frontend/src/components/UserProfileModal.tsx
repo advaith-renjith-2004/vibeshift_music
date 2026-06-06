@@ -108,16 +108,21 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ user, onClos
   };
 
   return (
-    <div className="profile-page-overlay">
+    <div className="profile-page-overlay" onClick={onClose}>
       {/* Moving Film Grain Overlay */}
       <div className="grain-overlay" />
-      
-      <button onClick={onClose} className="profile-back-btn">
-        <ArrowLeft size={16} />
-        BACK TO CONSOLE
-      </button>
 
-      <div className="profile-page-content">
+      <div className="profile-page-content" onClick={e => e.stopPropagation()}>
+        {/* MODAL CONTROL HEADER */}
+        <div className="flex justify-between items-center border-b border-panel-border pb-3">
+          <button onClick={onClose} className="profile-back-btn">
+            <ArrowLeft size={14} />
+            BACK TO CONSOLE
+          </button>
+          <span className="text-[9px] text-accent-color font-mono uppercase tracking-[0.2em]" style={{ color: 'var(--accent-color)' }}>
+            ● SECURE MODULE CONNECTED
+          </span>
+        </div>
         {/* LARGE HEADER */}
         <div className="profile-header-large">
           <div className="profile-avatar-large">
@@ -374,15 +379,10 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ user, onClos
             </div>
           )}
         </div>
-      </div>
-
-      {/* FOOTER - SYSTEM STATUS */}
-      <div className="fixed bottom-0 left-0 w-full p-6 flex justify-between items-center pointer-events-none z-30">
-        <div className="text-[10px] text-slate-600 font-mono uppercase tracking-[0.3em]">
-          UPLINK: ACTIVE // STORAGE: CLOUD_SYNCED
-        </div>
-        <div className="text-[10px] text-slate-600 font-mono uppercase tracking-[0.3em]">
-          USER: {user.uid}
+        {/* FOOTER - SYSTEM STATUS */}
+        <div className="mt-8 pt-4 border-t border-panel-border flex justify-between items-center text-[8px] text-slate-600 font-mono uppercase tracking-[0.2em]">
+          <span>UPLINK: ACTIVE // STORAGE: CLOUD_SYNCED</span>
+          <span>USER: {user.uid}</span>
         </div>
       </div>
     </div>
