@@ -817,6 +817,11 @@ app.post("/api/youtube/playlist", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`VibeShift backend server listening on port ${PORT}`);
-});
+if (process.env.FUNCTIONS_EMULATOR || process.env.FIREBASE_CONFIG) {
+  const functions = require("firebase-functions");
+  exports.api = functions.https.onRequest(app);
+} else {
+  app.listen(PORT, () => {
+    console.log(`VibeShift backend server listening on port ${PORT}`);
+  });
+}
