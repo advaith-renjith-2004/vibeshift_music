@@ -359,6 +359,64 @@ app.post("/api/playlist/create", async (req, res) => {
   }
 });
 
+// Scraper-based keyless YouTube search to find matching videoId
+async function searchYouTubeVideoId(query) {
+  try {
+    const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
+    const response = await axios.get(searchUrl, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+      }
+    });
+    const html = response.data;
+    // Extract videoId from ytInitialData renderer JSON embedded in HTML page
+    const regex = /"videoRenderer":{"videoId":"([^"]+)"/;
+    const match = html.match(regex);
+    if (match && match[1]) {
+      return match[1];
+    }
+  } catch (error) {
+    console.error(`YouTube search scraper error for query "${query}":`, error.message);
+  }
+  return null;
+}
+
+// Endpoint: Resolve query to YouTube videoId
+app.get("/api/youtube/search", async (req, res) => {
+  const { q } = req.query;
+  if (!q) {
+    return res.status(400).json({ error: "Missing search query parameter 'q'" });
+  }
+
+  const videoId = await searchYouTubeVideoId(q);
+  res.json({ videoId });
+});
+
+// Endpoint: Bulk resolve tracks to YouTube videoIds for playlist watch link
+app.post("/api/youtube/playlist", async (req, res) => {
+  const { tracks } = req.body;
+  if (!tracks || !Array.isArray(tracks)) {
+    return res.status(400).json({ error: "Missing or invalid 'tracks' array in body" });
+  }
+
+  try {
+    // Search up to 15 tracks in parallel
+    const searchPromises = tracks.slice(0, 15).map(async (track) => {
+      const query = `${track.artist} ${track.name} audio`;
+      const videoId = await searchYouTubeVideoId(query);
+      return videoId;
+    });
+
+    const results = await Promise.all(searchPromises);
+    const validVideoIds = results.filter(id => id !== null);
+
+    res.json({ videoIds: validVideoIds });
+  } catch (error) {
+    console.error("Bulk YouTube search failed:", error.message);
+    res.status(500).json({ error: "Failed to resolve video IDs for playlist" });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`VibeShift backend server listening on port ${PORT}`);
 });

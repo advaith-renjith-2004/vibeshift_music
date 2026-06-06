@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import axios from 'axios';
 import confetti from 'canvas-confetti';
-import { LogOut, Disc } from 'lucide-react';
+import { Disc } from 'lucide-react';
 
-import type { VibeState, Track, UserSpotifyInfo, GalleryItem } from './types';
+import type { VibeState, Track, GalleryItem } from './types';
 import { Visualizer } from './components/Visualizer';
 import { VibeGrid } from './components/VibeGrid';
 import { Sliders } from './components/Sliders';
@@ -31,7 +31,7 @@ export default function App() {
   const [tracks, setTracks] = useState<Track[]>([]);
   const [source, setSource] = useState<'spotify_api' | 'simulated_database'>('simulated_database');
   const [loading, setLoading] = useState(false);
-  const [spotifyInfo, setSpotifyInfo] = useState<UserSpotifyInfo | null>(null);
+
   const [gallery, setGallery] = useState<GalleryItem[]>([]);
 
   // Scroll reaction states for header glitching/floating
@@ -219,63 +219,7 @@ export default function App() {
 
   const debounceTimeoutRef = useRef<number | null>(null);
 
-  // 2. Spotify OAuth Handler
-  useEffect(() => {
-    // Parse URL Search Params
-    const params = new URLSearchParams(window.location.search);
-    const accessToken = params.get('access_token');
-    const refreshToken = params.get('refresh_token');
-    const expiresIn = params.get('expires_in');
-    const userId = params.get('user_id');
-    const userName = params.get('user_name');
 
-    if (accessToken && refreshToken && userId) {
-      const expiresAt = Date.now() + parseInt(expiresIn || '3600') * 1000;
-      const info: UserSpotifyInfo = {
-        accessToken,
-        refreshToken,
-        expiresAt,
-        userId,
-        userName: userName || userId
-      };
-
-      // Save to local storage and state
-      localStorage.setItem('vibeshift_spotify_info', JSON.stringify(info));
-      setSpotifyInfo(info);
-      
-      // Clean query params from URL
-      window.history.replaceState({}, document.title, window.location.pathname);
-      
-      // Trigger a success confetti!
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 },
-        colors: ['#1db954', '#1ed760', '#ffffff']
-      });
-    } else {
-      // Check local storage for existing session
-      const stored = localStorage.getItem('vibeshift_spotify_info');
-      if (stored) {
-        try {
-          const info = JSON.parse(stored) as UserSpotifyInfo;
-          // Check expiration
-          if (Date.now() < info.expiresAt) {
-            setSpotifyInfo(info);
-          } else {
-            localStorage.removeItem('vibeshift_spotify_info');
-          }
-        } catch {
-          localStorage.removeItem('vibeshift_spotify_info');
-        }
-      }
-    }
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem('vibeshift_spotify_info');
-    setSpotifyInfo(null);
-  };
 
   // 3. Fetch Recommendations (with Client Credentials or Local Fallback)
   const fetchRecommendations = useCallback(async (currentVibe: VibeState) => {
@@ -408,37 +352,6 @@ export default function App() {
     });
   };
 
-  // 7. Save Playlist to Spotify via User Access Token
-  const handleSaveToSpotify = async (playlistName: string) => {
-    if (!spotifyInfo) return null;
-
-    try {
-      const trackUris = tracks.map(t => t.uri);
-      const response = await axios.post(`${BACKEND_URL}/api/playlist/create`, {
-        accessToken: spotifyInfo.accessToken,
-        userId: spotifyInfo.userId,
-        name: playlistName,
-        uris: trackUris
-      });
-
-      if (response.data.success) {
-        confetti({
-          particleCount: 150,
-          spread: 80,
-          origin: { y: 0.5 },
-          colors: ['#6366f1', '#a855f7', '#ec4899']
-        });
-        return {
-          playlistId: response.data.playlistId,
-          playlistUrl: response.data.playlistUrl
-        };
-      }
-    } catch (error) {
-      console.error("Save playlist failed:", error);
-    }
-    return null;
-  };
-
   // 8. Publish Vibe to Gallery (Firestore or LocalStorage)
   const handlePublishToGallery = async (userName: string, vibeTitle: string) => {
     const success = await publishVibe({
@@ -497,28 +410,12 @@ export default function App() {
             </p>
           </div>
 
-          {spotifyInfo ? (
-            <div className="spotify-user-status glass-panel py-2.5 px-4 flex items-center gap-3">
-              <span className="spotify-user-dot" />
-              <span className="font-mono text-xs text-slate-300">
-                CONNECTED: <strong>{spotifyInfo.userName.toUpperCase()}</strong>
-              </span>
-              <button
-                onClick={handleLogout}
-                className="text-slate-400 hover:text-red-500 cursor-pointer transition-colors"
-                title="Disconnect Account"
-              >
-                <LogOut size={14} />
-              </button>
-            </div>
-          ) : (
-            <button
-              onClick={() => window.location.href = `${BACKEND_URL}/api/login`}
-              className="btn btn-secondary btn-spotify text-xs py-2 px-4 font-bold"
-            >
-              CONNECT SPOTIFY
-            </button>
-          )}
+          <div className="spotify-user-status glass-panel py-2.5 px-4 flex items-center gap-3">
+            <span className="spotify-user-dot" style={{ backgroundColor: 'var(--accent-red)', boxShadow: '0 0 8px var(--accent-red)' }} />
+            <span className="font-mono text-xs text-slate-300">
+              YOUTUBE MUSIC UPLINK: <strong>ONLINE // FREE</strong>
+            </span>
+          </div>
         </header>
 
         {/* MAIN INTERACTIVE WORKSPACE */}
@@ -563,8 +460,6 @@ export default function App() {
             <PlaylistView
               tracks={tracks}
               source={source}
-              spotifyInfo={spotifyInfo}
-              onSaveToSpotify={handleSaveToSpotify}
               onPublishToGallery={handlePublishToGallery}
               loading={loading}
             />

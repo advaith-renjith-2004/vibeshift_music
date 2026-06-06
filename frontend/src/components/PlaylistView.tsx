@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Music, Play, Pause, Save, Share2, Disc, ArrowUpRight } from 'lucide-react';
-import type { Track, UserSpotifyInfo } from '../types';
+import axios from 'axios';
+import type { Track } from '../types';
 
 interface PlaylistViewProps {
   tracks: Track[];
   source: 'spotify_api' | 'simulated_database';
-  spotifyInfo: UserSpotifyInfo | null;
-  onSaveToSpotify: (playlistName: string) => Promise<{ playlistId: string; playlistUrl: string } | null>;
   onPublishToGallery: (userName: string, vibeName: string) => Promise<boolean>;
   loading: boolean;
 }
@@ -14,19 +13,18 @@ interface PlaylistViewProps {
 export const PlaylistView: React.FC<PlaylistViewProps> = ({
   tracks,
   source,
-  spotifyInfo,
-  onSaveToSpotify,
   onPublishToGallery,
   loading
 }) => {
   const [activeTrack, setActiveTrack] = useState<Track | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   
-  // Modals state
-  const [showSaveModal, setShowSaveModal] = useState(false);
-  const [playlistName, setPlaylistName] = useState('My Vibe Playlist');
-  const [savingPlaylist, setSavingPlaylist] = useState(false);
-  const [savedPlaylistResult, setSavedPlaylistResult] = useState<{ id: string; url: string } | null>(null);
+  // YouTube player states
+  const [youtubeVideoId, setYoutubeVideoId] = useState<string | null>(null);
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [exportName, setExportName] = useState('My Vibe Playlist');
+  const [exportingPlaylist, setExportingPlaylist] = useState(false);
+  const [exportedPlaylistUrl, setExportedPlaylistUrl] = useState<string | null>(null);
 
   const [showPublishModal, setShowPublishModal] = useState(false);
   const [userName, setUserName] = useState('');
@@ -36,7 +34,7 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Auto-play the first track when a new playlist is generated (optional, let's just reset player)
+  // Auto-play/load first track and reset YouTube resolver
   useEffect(() => {
     if (tracks.length > 0) {
       setActiveTrack(tracks[0]);
@@ -44,7 +42,25 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
       setActiveTrack(null);
     }
     stopPreview();
+    setYoutubeVideoId(null);
   }, [tracks]);
+
+  // Query YouTube Video ID when activeTrack changes
+  useEffect(() => {
+    if (activeTrack) {
+      setYoutubeVideoId(null);
+      const query = `${activeTrack.artists.map(a => a.name).join(' ')} ${activeTrack.name} audio`;
+      axios.get('http://localhost:3001/api/youtube/search', { params: { q: query } })
+        .then(res => {
+          if (res.data.videoId) {
+            setYoutubeVideoId(res.data.videoId);
+          }
+        })
+        .catch(err => {
+          console.error("YouTube search fetch failed:", err);
+        });
+    }
+  }, [activeTrack]);
 
   // Handle Play/Pause of preview audio
   const handleTrackClick = (track: Track) => {
@@ -107,16 +123,32 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
     };
   }, []);
 
-  const handleSaveSubmit = async (e: React.FormEvent) => {
+  const handleExportPlaylistSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!playlistName.trim()) return;
+    if (tracks.length === 0) return;
 
-    setSavingPlaylist(true);
-    const result = await onSaveToSpotify(playlistName);
-    setSavingPlaylist(false);
-    
-    if (result) {
-      setSavedPlaylistResult({ id: result.playlistId, url: result.playlistUrl });
+    setExportingPlaylist(true);
+    setExportedPlaylistUrl(null);
+
+    try {
+      const trackPayload = tracks.map(t => ({
+        name: t.name,
+        artist: t.artists.map(a => a.name).join(' ')
+      }));
+
+      const response = await axios.post('http://localhost:3001/api/youtube/playlist', {
+        tracks: trackPayload
+      });
+
+      if (response.data.videoIds && response.data.videoIds.length > 0) {
+        const videoIds = response.data.videoIds;
+        const playlistUrl = `https://www.youtube.com/watch_videos?video_ids=${videoIds.join(',')}`;
+        setExportedPlaylistUrl(playlistUrl);
+      }
+    } catch (err) {
+      console.error("YouTube bulk search failed:", err);
+    } finally {
+      setExportingPlaylist(false);
     }
   };
 
@@ -135,11 +167,6 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
         setPublished(false);
       }, 1500);
     }
-  };
-
-  const handleConnectSpotify = () => {
-    // Redirect to backend auth endpoint
-    window.location.href = 'http://localhost:3001/api/login';
   };
 
   return (
@@ -268,44 +295,41 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
             </div>
           )}
 
-          {/* INTEGRATED SPOTIFY EMBED IFRAME PLAYER */}
+          {/* INTEGRATED YOUTUBE MUSIC PLAYER */}
           {activeTrack && (
             <div className="flex flex-col gap-2 mt-2">
-              <span className="text-[9px] text-slate-500 font-mono tracking-wider">
-                SPOTIFY PLAYER EXTENSION //
+              <span className="text-[9px] text-red-500 font-mono tracking-wider">
+                YOUTUBE MUSIC PLAYER //
               </span>
               <div className="spotify-embed-container">
-                <iframe
-                  src={`https://open.spotify.com/embed/track/${activeTrack.id}`}
-                  className="spotify-embed-iframe"
-                  allow="encrypted-media"
-                />
+                {youtubeVideoId ? (
+                  <iframe
+                    src={`https://www.youtube.com/embed/${youtubeVideoId}`}
+                    className="spotify-embed-iframe"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                ) : (
+                  <div className="w-full h-[80px] bg-black border border-red-950/40 flex items-center justify-center font-mono text-[10px] text-slate-500">
+                    RESOLVING WAVE SIGNAL...
+                  </div>
+                )}
               </div>
             </div>
           )}
 
           {/* ACTION BUTTONS */}
           <div className="player-actions">
-            {spotifyInfo ? (
-              <button
-                onClick={() => {
-                  setSavedPlaylistResult(null);
-                  setShowSaveModal(true);
-                }}
-                className="btn btn-primary flex-grow"
-              >
-                <Save size={16} />
-                SAVE TO SPOTIFY
-              </button>
-            ) : (
-              <button
-                onClick={handleConnectSpotify}
-                className="btn btn-secondary btn-spotify flex-grow"
-              >
-                <Save size={16} />
-                CONNECT SPOTIFY TO SAVE
-              </button>
-            )}
+            <button
+              onClick={() => {
+                setExportedPlaylistUrl(null);
+                setShowExportModal(true);
+              }}
+              className="btn btn-primary flex-grow"
+            >
+              <Save size={16} />
+              EXPORT TO YOUTUBE
+            </button>
 
             <button
               onClick={() => setShowPublishModal(true)}
@@ -319,45 +343,48 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
         </>
       )}
 
-      {/* SAVE PLAYLIST TO SPOTIFY MODAL */}
-      {showSaveModal && (
-        <div className="modal-overlay" onClick={() => setShowSaveModal(false)}>
+      {/* EXPORT PLAYLIST TO YOUTUBE MODAL */}
+      {showExportModal && (
+        <div className="modal-overlay" onClick={() => setShowExportModal(false)}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <h3 className="modal-title flex items-center gap-2">
-              <Save className="text-green-500" />
-              Save Playlist
+              <Save className="text-red-500" />
+              Export Playlist
             </h3>
             
-            {savedPlaylistResult ? (
+            {exportedPlaylistUrl ? (
               <div className="flex flex-col gap-4 text-center py-4">
-                <p className="text-green-400 font-medium">Playlist Created Successfully!</p>
+                <p className="text-red-400 font-medium text-xs">PLAYLIST QUEUE GENERATED!</p>
+                <p className="text-slate-400 text-[10px] uppercase font-mono">
+                  Open the queue on YouTube to stream full-length audio tracks for free and save to your Google account.
+                </p>
                 <a
-                  href={savedPlaylistResult.url}
+                  href={exportedPlaylistUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn btn-primary inline-flex justify-center"
                 >
-                  Open in Spotify
+                  Open on YouTube
                   <ArrowUpRight size={16} />
                 </a>
                 <button
-                  onClick={() => setShowSaveModal(false)}
+                  onClick={() => setShowExportModal(false)}
                   className="btn btn-secondary mt-2"
                 >
                   Close
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleSaveSubmit} className="flex flex-col gap-4">
-                <p className="text-slate-400 text-xs">
-                  This will create a new public playlist on your Spotify account: <strong>{spotifyInfo?.userName}</strong>
+              <form onSubmit={handleExportPlaylistSubmit} className="flex flex-col gap-4">
+                <p className="text-slate-400 text-xs font-mono uppercase">
+                  Translate <strong>{tracks.length}</strong> catalog items into YouTube video feeds.
                 </p>
                 <div className="flex flex-col gap-2">
                   <label className="text-xs text-slate-300">Playlist Name</label>
                   <input
                     type="text"
-                    value={playlistName}
-                    onChange={e => setPlaylistName(e.target.value)}
+                    value={exportName}
+                    onChange={e => setExportName(e.target.value)}
                     placeholder="Enter playlist name..."
                     className="input-field"
                     required
@@ -366,17 +393,17 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
                 <div className="modal-buttons mt-2">
                   <button
                     type="button"
-                    onClick={() => setShowSaveModal(false)}
+                    onClick={() => setShowExportModal(false)}
                     className="btn btn-secondary"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    disabled={savingPlaylist}
+                    disabled={exportingPlaylist}
                     className="btn btn-primary"
                   >
-                    {savingPlaylist ? 'Saving...' : 'Create Playlist'}
+                    {exportingPlaylist ? 'SEARCHING VIDEO IDS...' : 'EXPORT TO YOUTUBE'}
                   </button>
                 </div>
               </form>
