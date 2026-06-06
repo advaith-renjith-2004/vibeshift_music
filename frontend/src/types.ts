@@ -22,6 +22,24 @@ export interface VibeState {
   language: LanguageCode;
 }
 
+export interface UserProfile {
+  uid: string;
+  name: string;
+  email: string;
+  bio?: string;
+  avatarUrl?: string;
+}
+
+export interface PlayHistoryItem {
+  track: Track;
+  playedAt: string;
+  vibeSnapshot: {
+    energy: number;
+    valence: number;
+    weather: WeatherState;
+  };
+}
+
 export interface UserSpotifyInfo {
   accessToken: string;
   refreshToken: string;

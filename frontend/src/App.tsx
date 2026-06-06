@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import axios from 'axios';
 import confetti from 'canvas-confetti';
-import { Disc } from 'lucide-react';
+import { Disc, User } from 'lucide-react';
 import { useRegisterSW } from 'virtual:pwa-register/react';
 
-import type { VibeState, Track, GalleryItem } from './types';
+import type { VibeState, Track, GalleryItem, UserProfile } from './types';
 import { Visualizer } from './components/Visualizer';
 import { VibeGrid } from './components/VibeGrid';
 import { Sliders } from './components/Sliders';
@@ -14,9 +14,10 @@ import { PlaylistView } from './components/PlaylistView';
 import { VibeGallery } from './components/VibeGallery';
 import { GeometricVisualizer } from './components/GeometricVisualizer';
 import { PWAInstallPrompt } from './components/PWAInstallPrompt';
+import { UserProfileModal } from './components/UserProfileModal';
 
 import { filterLocalMock } from './utils/localMock';
-import { publishVibe, getGalleryItems } from './utils/firebase';
+import { publishVibe, getGalleryItems, saveUserProfile, getUserProfile, addToHistory } from './utils/firebase';
 
 const BACKEND_URL = 'http://localhost:3001';
 
@@ -43,6 +44,45 @@ export default function App() {
   const [loading, setLoading] = useState(false);
 
   const [gallery, setGallery] = useState<GalleryItem[]>([]);
+
+  // USER PROFILE STATE
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+
+  // Initialize/Load User Profile
+  useEffect(() => {
+    const initUser = async () => {
+      // Check for existing UID in local storage
+      let uid = localStorage.getItem('vibeshift_uid');
+      if (!uid) {
+        uid = `user_${Math.random().toString(36).substr(2, 9)}`;
+        localStorage.setItem('vibeshift_uid', uid);
+      }
+
+      const profile = await getUserProfile(uid);
+      if (profile) {
+        setUser(profile);
+      } else {
+        // Create initial default profile
+        const defaultProfile: UserProfile = {
+          uid,
+          name: 'Vibe Explorer',
+          email: 'explorer@vibeshift.io'
+        };
+        setUser(defaultProfile);
+        await saveUserProfile(defaultProfile);
+      }
+    };
+    initUser();
+  }, []);
+
+  const handleUpdateProfile = async (updatedProfile: UserProfile) => {
+    const success = await saveUserProfile(updatedProfile);
+    if (success) {
+      setUser(updatedProfile);
+    }
+    return success;
+  };
 
   // Scroll reaction states for header glitching/floating
   const [headerText, setHeaderText] = useState('VIBESHIFT');
@@ -236,6 +276,14 @@ export default function App() {
     // Remove if already present to avoid duplicates, then prepend
     const filtered = ids.filter(id => id !== trackId);
     recentPlayedIdsRef.current = [trackId, ...filtered].slice(0, 20);
+
+    // PERSIST PLAY TO FIREBASE HISTORY
+    if (user) {
+      const playedTrack = tracks.find(t => t.id === trackId);
+      if (playedTrack) {
+        addToHistory(user.uid, playedTrack, vibe);
+      }
+    }
   };
 
 
@@ -430,19 +478,34 @@ export default function App() {
             </p>
           </div>
 
-          <div className="spotify-user-status glass-panel py-2.5 px-4 flex items-center gap-2">
-            <svg 
-              viewBox="0 0 24 24" 
-              width="16" 
-              height="16" 
-              fill="currentColor"
-              style={{ color: 'var(--accent-red)' }}
+          <div className="flex items-center gap-3">
+            {/* USER PROFILE BUTTON */}
+            <button 
+              onClick={() => setShowProfileModal(true)}
+              className="glass-panel py-2 px-3 flex items-center gap-2 hover:bg-red-500/10 transition-colors group"
             >
-              <path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.11C19.517 3.545 12 3.545 12 3.545s-7.517 0-9.388.508a3.003 3.003 0 0 0-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 0 0 2.11 2.11c1.871.508 9.388.508 9.388.508s7.517 0 9.388-.508a3.003 3.003 0 0 0 2.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-            </svg>
-            <span className="font-mono text-xs text-slate-300">
-              <strong>YOUTUBE</strong>
-            </span>
+              <div className="w-5 h-5 bg-red-950/40 flex items-center justify-center rounded-sm">
+                <User size={14} className="text-red-500" />
+              </div>
+              <span className="font-mono text-[10px] text-slate-300 group-hover:text-white">
+                {user ? user.name.toUpperCase() : 'PROFILE'}
+              </span>
+            </button>
+
+            <div className="spotify-user-status glass-panel py-2.5 px-4 flex items-center gap-2">
+              <svg 
+                viewBox="0 0 24 24" 
+                width="16" 
+                height="16" 
+                fill="currentColor"
+                style={{ color: 'var(--accent-red)' }}
+              >
+                <path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.11C19.517 3.545 12 3.545 12 3.545s-7.517 0-9.388.508a3.003 3.003 0 0 0-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 0 0 2.11 2.11c1.871.508 9.388.508 9.388.508s7.517 0 9.388-.508a3.003 3.003 0 0 0 2.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+              </svg>
+              <span className="font-mono text-xs text-slate-300">
+                <strong>YOUTUBE</strong>
+              </span>
+            </div>
           </div>
         </header>
 
@@ -521,6 +584,15 @@ export default function App() {
           <div className="footer-sub">SYNESTHETIC MUSIC DISCOVERY PLATFORM — POWERED BY YOUTUBE</div>
         </footer>
       </div>
+
+      {/* MODALS */}
+      {showProfileModal && user && (
+        <UserProfileModal
+          user={user}
+          onClose={() => setShowProfileModal(false)}
+          onUpdate={handleUpdateProfile}
+        />
+      )}
 
       {/* PWA: Install prompt banner */}
       <PWAInstallPrompt />
