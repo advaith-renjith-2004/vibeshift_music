@@ -18,6 +18,14 @@ const THEMES: { id: ThemeType; name: string; color: string }[] = [
   { id: 'custom', name: 'Custom', color: '#ffffff' }
 ];
 
+const CARTOON_AVATARS = [
+  { id: 'dj', path: '/avatars/dj.png', name: 'NEON DJ' },
+  { id: 'cat', path: '/avatars/cat.png', name: 'CYBER CAT' },
+  { id: 'robot', path: '/avatars/robot.png', name: 'RETRO BOT' },
+  { id: 'explorer', path: '/avatars/explorer.png', name: 'EXPLORER' },
+  { id: 'ghost', path: '/avatars/ghost.png', name: 'ARCADE GHOST' }
+];
+
 export const UserProfileModal: React.FC<UserProfileModalProps> = ({ user, onClose, onUpdate }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState(user.name);
@@ -200,7 +208,32 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ user, onClos
               <div className="flex flex-col gap-3">
                 <label className="text-xs text-accent-color font-mono uppercase flex items-center gap-1" style={{ color: 'var(--accent-color)' }}>
                   <ImageIcon size={12} />
-                  Visual Avatar URL
+                  Choose Cyberpunk Avatar
+                </label>
+                <div className="avatar-picker-grid">
+                  {CARTOON_AVATARS.map(avatar => (
+                    <button
+                      key={avatar.id}
+                      type="button"
+                      onClick={() => setEditedAvatar(avatar.path)}
+                      className={`avatar-picker-item ${editedAvatar === avatar.path ? 'active' : ''}`}
+                      title={avatar.name}
+                    >
+                      <img src={avatar.path} alt={avatar.name} className="avatar-picker-img" />
+                      {editedAvatar === avatar.path && (
+                        <div className="avatar-picker-badge" style={{ backgroundColor: 'var(--accent-color)' }}>
+                          <Check size={10} className="text-white" />
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <label className="text-xs text-accent-color font-mono uppercase flex items-center gap-1" style={{ color: 'var(--accent-color)' }}>
+                  <ImageIcon size={12} />
+                  Visual Avatar URL (Custom Web Link)
                 </label>
                 <input
                   type="url"
