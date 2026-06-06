@@ -376,6 +376,10 @@ export default function App() {
         }
       });
 
+      if (!response.data || !Array.isArray(response.data.tracks)) {
+        throw new Error("Invalid API response format: 'tracks' must be a valid array.");
+      }
+
       setTracks(response.data.tracks);
       setSource(response.data.source as 'spotify_api' | 'simulated_database');
     } catch (error) {
