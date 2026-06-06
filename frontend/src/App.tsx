@@ -34,6 +34,189 @@ export default function App() {
   const [spotifyInfo, setSpotifyInfo] = useState<UserSpotifyInfo | null>(null);
   const [gallery, setGallery] = useState<GalleryItem[]>([]);
 
+  // Scroll reaction states for header glitching/floating
+  const [headerText, setHeaderText] = useState('VIBESHIFT');
+  const [taglineText, setTaglineText] = useState('SYNESTHETIC MUSIC DISCOVERY PLATFORM');
+  const [scrollSkew, setScrollSkew] = useState(0);
+  const [scrollSpacing, setScrollSpacing] = useState(0.1);
+  const [scrollDirection, setScrollDirection] = useState<'up' | 'down' | 'idle'>('idle');
+
+  const lastScrollY = useRef(0);
+  const scrollTimeoutRef = useRef<number | null>(null);
+  const decodeHeaderIntervalRef = useRef<number | null>(null);
+  const decodeTaglineIntervalRef = useRef<number | null>(null);
+  const headerRef = useRef<HTMLElement | null>(null);
+
+  // Helper for cascading cyber decode reveal
+  const startDecode = (
+    targetText: string,
+    setTextFn: React.Dispatch<React.SetStateAction<string>>,
+    pool: string,
+    intervalRef: React.MutableRefObject<number | null>,
+    speed = 30,
+    charsPerStep = 1
+  ) => {
+    if (intervalRef.current) {
+      window.clearInterval(intervalRef.current);
+    }
+    
+    let currentIteration = 0;
+    const totalChars = targetText.length;
+    
+    intervalRef.current = window.setInterval(() => {
+      setTextFn(() => {
+        return targetText
+          .split('')
+          .map((char, index) => {
+            if (char === ' ') return ' ';
+            if (index < currentIteration) {
+              return char;
+            }
+            if (Math.random() < 0.15) return ' ';
+            return pool[Math.floor(Math.random() * pool.length)];
+          })
+          .join('');
+      });
+      
+      currentIteration += charsPerStep;
+      
+      if (currentIteration >= totalChars + 2) {
+        setTextFn(targetText);
+        if (intervalRef.current) {
+          window.clearInterval(intervalRef.current);
+          intervalRef.current = null;
+        }
+      }
+    }, speed);
+  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      const velocity = currentScrollY - lastScrollY.current;
+      lastScrollY.current = currentScrollY;
+
+      // Reset states at top of page
+      if (currentScrollY < 10) {
+        setScrollSkew(0);
+        setScrollSpacing(0.1);
+        setScrollDirection('idle');
+        return;
+      }
+
+      // Calculate skew and spacing based on scroll velocity and position
+      const targetSkew = Math.max(-12, Math.min(12, velocity * 0.22));
+      setScrollSkew(targetSkew);
+      
+      const targetSpacing = 0.1 + Math.min(0.22, currentScrollY * 0.0004);
+      setScrollSpacing(targetSpacing);
+
+      // Determine scroll direction
+      const direction = velocity > 0 ? 'down' : 'up';
+      setScrollDirection(direction);
+
+      // Clear any running decode animations during active scroll
+      if (decodeHeaderIntervalRef.current) {
+        window.clearInterval(decodeHeaderIntervalRef.current);
+        decodeHeaderIntervalRef.current = null;
+      }
+      if (decodeTaglineIntervalRef.current) {
+        window.clearInterval(decodeTaglineIntervalRef.current);
+        decodeTaglineIntervalRef.current = null;
+      }
+
+      // Glitch the header text while scrolling!
+      if (Math.abs(velocity) > 1.5) {
+        const titleChars = 'VIBESHIFT';
+        // Select glitch pool based on direction
+        const glitchPool = direction === 'down' 
+          ? '01#_[]{}<>/\\|◆▲▼■●★◇$@&%!' 
+          : '♩♪♫♬♭♮♯°ø~≈±∽∞⌒‾_⁻₊=~';
+
+        const glitchedTitle = titleChars.split('').map((char) => {
+          if (char === ' ') return ' ';
+          return Math.random() < 0.4 ? glitchPool[Math.floor(Math.random() * glitchPool.length)] : char;
+        }).join('');
+        
+        setHeaderText(glitchedTitle);
+
+        const tagline = direction === 'down' 
+          ? '[SYS_DN: DOWNLINK_LOAD]' 
+          : '[SYS_UP: UPLINK_SYNC]';
+        
+        const glitchedTagline = tagline.split('').map((char) => {
+          if (char === ' ') return ' ';
+          return Math.random() < 0.2 ? glitchPool[Math.floor(Math.random() * glitchPool.length)] : char;
+        }).join('');
+        setTaglineText(glitchedTagline);
+      }
+
+      // Reset text with a digital decode reveal when scrolling stops
+      if (scrollTimeoutRef.current) {
+        window.clearTimeout(scrollTimeoutRef.current);
+      }
+
+      scrollTimeoutRef.current = window.setTimeout(() => {
+        setScrollDirection('idle');
+        setScrollSkew(0);
+        
+        const glitchPool = direction === 'down' 
+          ? '01#_[]{}<>/\\|◆▲▼■●★◇$@&%!' 
+          : '♩♪♫♬♭♮♯°ø~≈±∽∞⌒‾_⁻₊=~';
+
+        startDecode('VIBESHIFT', setHeaderText, glitchPool, decodeHeaderIntervalRef, 40, 1);
+        startDecode('SYNESTHETIC MUSIC DISCOVERY PLATFORM', setTaglineText, glitchPool, decodeTaglineIntervalRef, 25, 2);
+      }, 150);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (scrollTimeoutRef.current) window.clearTimeout(scrollTimeoutRef.current);
+      if (decodeHeaderIntervalRef.current) window.clearInterval(decodeHeaderIntervalRef.current);
+      if (decodeTaglineIntervalRef.current) window.clearInterval(decodeTaglineIntervalRef.current);
+    };
+  }, []);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    const header = headerRef.current;
+    if (!header) return;
+    const rect = header.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    const relativeX = (x / rect.width) - 0.5;
+    const relativeY = (y / rect.height) - 0.5;
+    
+    header.style.setProperty('--rx', `${relativeY * -12}deg`);
+    header.style.setProperty('--ry', `${relativeX * 12}deg`);
+    header.style.setProperty('--tx', `${relativeX * 15}px`);
+    header.style.setProperty('--ty', `${relativeY * 8}px`);
+    header.style.setProperty('--mx', `${(x / rect.width) * 100}%`);
+    header.style.setProperty('--my', `${(y / rect.height) * 100}%`);
+  };
+
+  const handleMouseLeave = () => {
+    const header = headerRef.current;
+    if (!header) return;
+    header.style.setProperty('--rx', '0deg');
+    header.style.setProperty('--ry', '0deg');
+    header.style.setProperty('--tx', '0px');
+    header.style.setProperty('--ty', '0px');
+    header.style.setProperty('--mx', '50%');
+    header.style.setProperty('--my', '50%');
+  };
+
+  const getDiscStyle = () => {
+    if (scrollDirection === 'down') {
+      return { animation: 'spin 0.8s linear infinite', color: 'var(--accent-red)' };
+    }
+    if (scrollDirection === 'up') {
+      return { animation: 'spin-reverse 0.8s linear infinite', color: '#00f6ff' };
+    }
+    return { animation: 'spin 4s linear infinite', color: 'var(--accent-red)' };
+  };
+
   const debounceTimeoutRef = useRef<number | null>(null);
 
   // 2. Spotify OAuth Handler
@@ -286,13 +469,32 @@ export default function App() {
 
       <div className="app-container">
         {/* HEADER */}
-        <header>
+        <header 
+          ref={headerRef}
+          className={`sticky-header scroll-dir-${scrollDirection}`}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+        >
           <div className="brand">
-            <h1 className="flex items-center gap-2">
-              <Disc className="animate-spin text-red-600" size={32} style={{ animationDuration: '4s' }} />
-              VIBESHIFT
+            <h1 
+              className="flex items-center gap-2"
+              style={{ 
+                transform: `skewX(${scrollSkew}deg)`, 
+                letterSpacing: `${scrollSpacing}em`,
+                transition: 'transform 0.08s ease-out, letter-spacing 0.08s ease-out'
+              }}
+            >
+              <Disc size={32} style={getDiscStyle()} />
+              {headerText}
             </h1>
-            <p>SYNESTHETIC MUSIC DISCOVERY PLATFORM</p>
+            <p
+              style={{
+                letterSpacing: `${scrollSpacing * 2.2}em`,
+                transition: 'letter-spacing 0.08s ease-out'
+              }}
+            >
+              {taglineText}
+            </p>
           </div>
 
           {spotifyInfo ? (

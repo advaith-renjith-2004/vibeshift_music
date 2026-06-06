@@ -148,13 +148,24 @@ h1, h2, h3, h4, .font-display {
   z-index: 1;
 }
 
-header {
+header.sticky-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
-  border-bottom: 2px solid var(--panel-border);
-  padding-bottom: 16px;
-  margin-bottom: 8px;
+  align-items: center;
+  position: sticky;
+  top: 16px;
+  z-index: 999;
+  background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255, 0, 60, 0.04) 0%, rgba(4, 4, 6, 0.88) 75%);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--panel-border);
+  padding: 18px 24px;
+  margin-bottom: 32px;
+  border-radius: 0px;
+  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  perspective: 1000px;
+  transform-style: preserve-3d;
+  animation: headerFloatIdle 6s ease-in-out infinite;
+  transition: border-color 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s cubic-bezier(0.25, 1, 0.5, 1), transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .brand {
@@ -1119,4 +1130,70 @@ header {
 
 .carousel-item.playing .carousel-vinyl-disc {
   animation: spin 3s linear infinite;
+}
+
+/* 🎈 Idle floating/hovering header animation */
+@keyframes headerFloatIdle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+/* 🕹️ Parallax multi-layered 3D shifts on hovering */
+.sticky-header .brand {
+  transform: translate3d(calc(var(--tx, 0px) * 0.9), calc(var(--ty, 0px) * 0.9), 20px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transform-style: preserve-3d;
+  transition: transform 0.15s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.sticky-header .brand h1 {
+  transition: color 0.25s ease, text-shadow 0.25s ease;
+}
+
+.sticky-header .brand p {
+  transform: translate3d(calc(var(--tx, 0px) * 0.45), calc(var(--ty, 0px) * 0.45), 10px);
+  transition: transform 0.15s cubic-bezier(0.25, 1, 0.5, 1), color 0.25s ease, letter-spacing 0.08s ease-out;
+}
+
+.sticky-header .spotify-user-status,
+.sticky-header .btn-spotify {
+  transform: translate3d(calc(var(--tx, 0px) * -0.6), calc(var(--ty, 0px) * -0.6), 15px);
+  transition: transform 0.15s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* 🌀 Reverse spin animation for upscroll disc reaction */
+@keyframes spin-reverse {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+/* 🔴 Scroll-Down Visual Reactions */
+.sticky-header.scroll-dir-down {
+  border-color: var(--accent-red);
+  box-shadow: 0 12px 40px rgba(255, 0, 60, 0.25), inset 0 1px 0 rgba(255, 0, 60, 0.15);
+}
+
+.sticky-header.scroll-dir-down .brand h1 {
+  color: var(--accent-red) !important;
+  text-shadow: 0 0 15px var(--accent-red-glow), 0 0 30px rgba(255, 0, 60, 0.4);
+}
+
+.sticky-header.scroll-dir-down .brand p {
+  color: rgba(255, 0, 60, 0.8) !important;
+  text-shadow: 0 0 8px rgba(255, 0, 60, 0.2);
+}
+
+/* 🔵 Scroll-Up Visual Reactions */
+.sticky-header.scroll-dir-up {
+  border-color: #00f6ff;
+  box-shadow: 0 12px 40px rgba(0, 246, 255, 0.2), inset 0 1px 0 rgba(0, 246, 255, 0.1);
+}
+
+.sticky-header.scroll-dir-up .brand h1 {
+  color: #00f6ff !important;
+  text-shadow: 0 0 15px rgba(0, 246, 255, 0.8), 0 0 30px rgba(0, 246, 255, 0.4);
+}
+
+.sticky-header.scroll-dir-up .brand p {
+  color: rgba(0, 246, 255, 0.8) !important;
+  text-shadow: 0 0 8px rgba(0, 246, 255, 0.2);
 }
