@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Music, Play, Pause, Save, Share2, Disc, ArrowUpRight } from 'lucide-react';
+import { Music, Play, Pause, Save, Share2, Disc, ArrowUpRight, SkipBack, SkipForward } from 'lucide-react';
 import axios from 'axios';
 import type { Track } from '../types';
 
@@ -141,6 +141,26 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
       audioRef.current = null;
     }
     setIsPlaying(false);
+  };
+
+  const handleNextTrack = () => {
+    if (!activeTrack || tracks.length === 0) return;
+    const currentIndex = tracks.findIndex(t => t.id === activeTrack.id);
+    if (currentIndex === -1) return;
+    const nextIndex = (currentIndex + 1) % tracks.length;
+    const nextTrack = tracks[nextIndex];
+    setActiveTrack(nextTrack);
+    playPreview(nextTrack);
+  };
+
+  const handlePrevTrack = () => {
+    if (!activeTrack || tracks.length === 0) return;
+    const currentIndex = tracks.findIndex(t => t.id === activeTrack.id);
+    if (currentIndex === -1) return;
+    const prevIndex = (currentIndex - 1 + tracks.length) % tracks.length;
+    const prevTrack = tracks[prevIndex];
+    setActiveTrack(prevTrack);
+    playPreview(prevTrack);
   };
 
   // Cleanup on unmount
@@ -320,11 +340,25 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
                 
                 <div className="flex items-center gap-1.5">
                   <button 
-                    onClick={() => handleTrackClick(activeTrack)} 
+                    onClick={handlePrevTrack} 
                     className="w-7 h-7 border border-red-900 bg-black hover:bg-red-950/40 text-red-500 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+                    title="PREVIOUS TRACK"
+                  >
+                    <SkipBack size={11} className="fill-current" />
+                  </button>
+                  <button 
+                    onClick={() => handleTrackClick(activeTrack)} 
+                    className="w-8 h-8 border border-red-600 bg-red-950/20 hover:bg-red-950/50 text-red-500 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
                     title={isPlaying ? "PAUSE PREVIEW" : "PLAY PREVIEW"}
                   >
-                    {isPlaying ? <Pause size={11} className="fill-current" /> : <Play size={11} className="fill-current" />}
+                    {isPlaying ? <Pause size={12} className="fill-current" /> : <Play size={12} className="fill-current" />}
+                  </button>
+                  <button 
+                    onClick={handleNextTrack} 
+                    className="w-7 h-7 border border-red-900 bg-black hover:bg-red-950/40 text-red-500 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+                    title="NEXT TRACK"
+                  >
+                    <SkipForward size={11} className="fill-current" />
                   </button>
                 </div>
               </div>
