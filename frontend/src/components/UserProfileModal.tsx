@@ -129,7 +129,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ user, onClos
             {user.avatarUrl ? (
               <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
             ) : (
-              <User size={80} className="text-accent-color" style={{ color: 'var(--accent-color)' }} />
+              <User size={50} className="text-accent-color" style={{ color: 'var(--accent-color)' }} />
             )}
           </div>
           <div className="profile-info-large flex-grow">
