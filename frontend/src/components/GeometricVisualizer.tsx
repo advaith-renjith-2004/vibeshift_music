@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 import type { VibeState } from '../types';
 
 interface GeometricVisualizerProps {
@@ -20,8 +20,8 @@ interface MusicalNote {
 export const GeometricVisualizer: React.FC<GeometricVisualizerProps> = ({ vibe }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [hoverPos, setHoverPos] = useState<{ x: number; y: number } | null>(null);
-  const [ripple, setRipple] = useState<{ x: number; y: number; r: number; alpha: number } | null>(null);
+  const hoverPosRef = useRef<{ x: number; y: number } | null>(null);
+  const rippleRef = useRef<{ x: number; y: number; r: number; alpha: number } | null>(null);
 
   const notesRef = useRef<MusicalNote[]>([]);
   const animationFrameIdRef = useRef<number | null>(null);
@@ -37,7 +37,7 @@ export const GeometricVisualizer: React.FC<GeometricVisualizerProps> = ({ vibe }
     const clickX = e.clientX - rect.left;
     const clickY = e.clientY - rect.top;
 
-    setRipple({ x: clickX, y: clickY, r: 5, alpha: 1 });
+    rippleRef.current = { x: clickX, y: clickY, r: 5, alpha: 1 };
 
     // Spawn a burst of notes
     for (let i = 0; i < 8; i++) {
@@ -61,14 +61,14 @@ export const GeometricVisualizer: React.FC<GeometricVisualizerProps> = ({ vibe }
     const canvas = canvasRef.current;
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
-    setHoverPos({
+    hoverPosRef.current = {
       x: e.clientX - rect.left,
       y: e.clientY - rect.top
-    });
+    };
   };
 
   const handleMouseLeave = () => {
-    setHoverPos(null);
+    hoverPosRef.current = null;
   };
 
   useEffect(() => {
@@ -131,32 +131,34 @@ export const GeometricVisualizer: React.FC<GeometricVisualizerProps> = ({ vibe }
       }
 
       // Draw ripple if active
-      if (ripple) {
-        ctx.strokeStyle = getRGBA(ripple.alpha);
+      const currentRipple = rippleRef.current;
+      if (currentRipple) {
+        ctx.strokeStyle = getRGBA(currentRipple.alpha);
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.arc(ripple.x, ripple.y, ripple.r, 0, Math.PI * 2);
+        ctx.arc(currentRipple.x, currentRipple.y, currentRipple.r, 0, Math.PI * 2);
         ctx.stroke();
 
         // Update ripple
-        setRipple(prev => {
-          if (!prev) return null;
-          if (prev.alpha <= 0.05) return null;
-          return {
-            ...prev,
-            r: prev.r + 3,
-            alpha: prev.alpha - 0.05
+        if (currentRipple.alpha <= 0.05) {
+          rippleRef.current = null;
+        } else {
+          rippleRef.current = {
+            ...currentRipple,
+            r: currentRipple.r + 3,
+            alpha: currentRipple.alpha - 0.05
           };
-        });
+        }
       }
 
       // Target center of geometric shapes
       // If user hovers, pull the center slightly towards the hover position
       let centerX = width / 2;
       let centerY = height / 2;
-      if (hoverPos) {
-        centerX = centerX * 0.7 + hoverPos.x * 0.3;
-        centerY = centerY * 0.7 + hoverPos.y * 0.3;
+      const currentHoverPos = hoverPosRef.current;
+      if (currentHoverPos) {
+        centerX = centerX * 0.7 + currentHoverPos.x * 0.3;
+        centerY = centerY * 0.7 + currentHoverPos.y * 0.3;
       }
 
       // Periodic emission of notes from the center
@@ -270,7 +272,7 @@ export const GeometricVisualizer: React.FC<GeometricVisualizerProps> = ({ vibe }
         cancelAnimationFrame(animationFrameIdRef.current);
       }
     };
-  }, [vibe, hoverPos, ripple]);
+  }, [vibe]);
 
   // Handle Resize
   useEffect(() => {

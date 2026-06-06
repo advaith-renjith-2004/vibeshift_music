@@ -19,7 +19,7 @@ import { UserProfileModal } from './components/UserProfileModal';
 import { filterLocalMock } from './utils/localMock';
 import { publishVibe, getGalleryItems, saveUserProfile, getUserProfile, addToHistory } from './utils/firebase';
 
-const BACKEND_URL = 'http://localhost:3001';
+import { BACKEND_URL } from './config';
 
 export default function App() {
   // PWA: Service Worker update hook

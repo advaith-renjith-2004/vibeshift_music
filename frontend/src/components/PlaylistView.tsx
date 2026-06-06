@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Music, Play, Pause, Save, Share2, Disc, ArrowUpRight, SkipBack, SkipForward } from 'lucide-react';
 import axios from 'axios';
 import type { Track } from '../types';
+import { BACKEND_URL } from '../config';
 
 interface PlaylistViewProps {
   tracks: Track[];
@@ -80,7 +81,7 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
       }
       setYoutubeVideoId(null);
       const query = `${activeTrack.artists.map(a => a.name).join(' ')} ${activeTrack.name} audio`;
-      axios.get('http://localhost:3001/api/youtube/search', { params: { q: query } })
+      axios.get(`${BACKEND_URL}/api/youtube/search`, { params: { q: query } })
         .then(res => {
           if (res.data.videoId) {
             setYoutubeVideoId(res.data.videoId);
@@ -99,7 +100,7 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
         name: t.name,
         artist: t.artists.map(a => a.name).join(' ')
       }));
-      axios.post('http://localhost:3001/api/youtube/playlist', { tracks: payload })
+      axios.post(`${BACKEND_URL}/api/youtube/playlist`, { tracks: payload })
         .then(res => {
           if (res.data.videoIds && Array.isArray(res.data.videoIds)) {
             const newMapping: Record<string, string> = {};
@@ -214,7 +215,7 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
         artist: t.artists.map(a => a.name).join(' ')
       }));
 
-      const response = await axios.post('http://localhost:3001/api/youtube/playlist', {
+      const response = await axios.post(`${BACKEND_URL}/api/youtube/playlist`, {
         tracks: trackPayload
       });
 
