@@ -176,54 +176,56 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
         </div>
       ) : (
         <>
-          <div className="playlist-list flex-grow">
-            {tracks.map(track => (
-              <div
-                key={track.id}
-                onClick={() => handleTrackClick(track)}
-                className={`track-card ${activeTrack?.id === track.id ? 'playing' : ''}`}
-              >
-                <div className="track-album-art">
-                  {track.album.images?.[0] ? (
-                    <img src={track.album.images[0].url} alt={track.name} />
-                  ) : (
-                    <div className="w-full h-full bg-slate-900 flex items-center justify-center">
-                      <Music size={16} />
-                    </div>
-                  )}
-                  <div className="play-overlay">
-                    {activeTrack?.id === track.id && isPlaying ? (
-                      <Pause size={16} className="text-white fill-white" />
-                    ) : (
-                      <Play size={16} className="text-white fill-white" />
-                    )}
-                  </div>
-                </div>
+          <div className="carousel-container flex-grow">
+            <div className="carousel-wrap">
+              <div className="carousel-list">
+                {tracks.map((track, idx) => {
+                  const catalogCode = `TT-${String(44 - idx).padStart(2, '0')}`;
+                  const isCurrentPlaying = activeTrack?.id === track.id && isPlaying;
+                  return (
+                    <div
+                      key={track.id}
+                      onClick={() => handleTrackClick(track)}
+                      className={`carousel-item ${activeTrack?.id === track.id ? 'active' : ''} ${isCurrentPlaying ? 'playing' : ''}`}
+                    >
+                      <div className="carousel-artwork-link">
+                        {track.album.images?.[0] ? (
+                          <img src={track.album.images[0].url} alt={track.name} className="carousel-img" />
+                        ) : (
+                          <div className="w-full h-full bg-slate-900 flex items-center justify-center">
+                            <Music size={24} className="text-slate-700" />
+                          </div>
+                        )}
+                        <div className="carousel-play-overlay">
+                          {isCurrentPlaying ? (
+                            <Pause size={24} className="text-white fill-white" />
+                          ) : (
+                            <Play size={24} className="text-white fill-white" />
+                          )}
+                        </div>
+                        <div className="carousel-info-block">
+                          {catalogCode}
+                        </div>
+                      </div>
 
-                {/* Spinning Vinyl Disc next to active track */}
-                {activeTrack?.id === track.id && (
-                  <div className="vinyl-container">
-                    <div className="vinyl-disc">
-                      <div className="vinyl-center" />
-                    </div>
-                  </div>
-                )}
+                      {/* Sliding spinning vinyl disc behind album art */}
+                      <div className="carousel-vinyl-wrapper">
+                        <div className="carousel-vinyl-disc">
+                          <div className="vinyl-center" />
+                        </div>
+                      </div>
 
-                <div className="track-details">
-                  <div className="track-name">{track.name}</div>
-                  <div className="track-artist">
-                    {track.artists.map(a => a.name).join(', ').toUpperCase()}
-                  </div>
-                </div>
-                {track.preview_url && activeTrack?.id === track.id && isPlaying && (
-                  <div className="flex gap-[3px] items-end h-3 pr-2">
-                    <div className="w-[3px] bg-red-600 animate-[pulse_0.8s_infinite_alternate]" style={{ height: '100%', animationDelay: '0.1s' }} />
-                    <div className="w-[3px] bg-red-700 animate-[pulse_0.8s_infinite_alternate]" style={{ height: '70%', animationDelay: '0.3s' }} />
-                    <div className="w-[3px] bg-red-500 animate-[pulse_0.8s_infinite_alternate]" style={{ height: '90%', animationDelay: '0.5s' }} />
-                  </div>
-                )}
+                      <div className="carousel-item-text">
+                        <div className="carousel-item-title truncate">{track.name}</div>
+                        <div className="carousel-item-artist truncate">
+                          {track.artists.map(a => a.name).join(', ').toUpperCase()}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-            ))}
+            </div>
           </div>
 
           {/* PHYSICAL TAPE DECK CONTROLLER DISPLAY */}
