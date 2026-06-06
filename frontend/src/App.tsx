@@ -11,6 +11,7 @@ import { TextureSelector } from './components/TextureSelector';
 import { VibeProfile } from './components/VibeProfile';
 import { PlaylistView } from './components/PlaylistView';
 import { VibeGallery } from './components/VibeGallery';
+import { GeometricVisualizer } from './components/GeometricVisualizer';
 
 import { filterLocalMock } from './utils/localMock';
 import { publishVibe, getGalleryItems } from './utils/firebase';
@@ -365,11 +366,16 @@ export default function App() {
               onPublishToGallery={handlePublishToGallery}
               loading={loading}
             />
+
+            {/* Spektrum Oscilloscope Visualizer module */}
+            <div className="glass-panel" data-index="06 ANALYZER">
+              <GeometricVisualizer vibe={vibe} />
+            </div>
           </div>
         </div>
 
         {/* BOTTOM SECTION: COMMUNITY FEED */}
-        <div className="mt-8 glass-panel" data-index="06 REGISTRY">
+        <div className="mt-8 glass-panel" data-index="07 REGISTRY">
           <VibeGallery
             items={gallery}
             onLoadVibe={handleLoadVibe}
