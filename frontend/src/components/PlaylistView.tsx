@@ -5,16 +5,18 @@ import type { Track } from '../types';
 
 interface PlaylistViewProps {
   tracks: Track[];
-  source: 'spotify_api' | 'simulated_database';
+  source: 'spotify_api' | 'simulated_database' | string;
   onPublishToGallery: (userName: string, vibeName: string) => Promise<boolean>;
   loading: boolean;
+  onTrackPlay?: (trackId: string) => void;
 }
 
 export const PlaylistView: React.FC<PlaylistViewProps> = ({
   tracks,
   source,
   onPublishToGallery,
-  loading
+  loading,
+  onTrackPlay
 }) => {
   const [activeTrack, setActiveTrack] = useState<Track | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -49,6 +51,11 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
   // Query YouTube Video ID when activeTrack changes
   useEffect(() => {
     if (activeTrack) {
+      // If track already has a youtube videoId embedded (from youtube_live source), use it directly
+      if ((activeTrack as any).youtubeVideoId) {
+        setYoutubeVideoId((activeTrack as any).youtubeVideoId);
+        return;
+      }
       setYoutubeVideoId(null);
       const query = `${activeTrack.artists.map(a => a.name).join(' ')} ${activeTrack.name} audio`;
       axios.get('http://localhost:3001/api/youtube/search', { params: { q: query } })
@@ -107,6 +114,8 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
 
   const playPreview = (track: Track) => {
     stopPreview();
+    // Notify parent of the played track for history tracking
+    if (onTrackPlay) onTrackPlay(track.id);
 
     if (!track.preview_url) {
       // No preview URL, but we still mark it active for the Iframe Embed
@@ -225,9 +234,9 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
           DISCOVERED SOUNDS
         </h3>
         {!loading && tracks.length > 0 && (
-          <span className={`playlist-source-tag ${source === 'spotify_api' ? 'source-spotify' : 'source-mock'}`}>
+          <span className={`playlist-source-tag ${source === 'spotify_api' ? 'source-spotify' : source === 'youtube_live' ? 'source-yt-live' : 'source-mock'}`}>
             <Disc size={12} className={source === 'spotify_api' ? 'animate-spin' : ''} />
-            {source === 'spotify_api' ? 'SPOTIFY API' : 'SIMULATED VIBE'}
+            {source === 'spotify_api' ? 'SPOTIFY API' : source === 'youtube_live' ? '▶ YOUTUBE LIVE' : 'SIMULATED VIBE'}
           </span>
         )}
       </div>

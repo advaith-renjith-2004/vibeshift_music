@@ -556,6 +556,13 @@ header.sticky-header {
   border: 1px solid var(--panel-border);
 }
 
+.source-yt-live {
+  background: rgba(255, 80, 0, 0.12);
+  color: #ff5500;
+  border: 1px solid rgba(255, 80, 0, 0.35);
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
 .playlist-list {
   display: flex;
   flex-direction: column;
@@ -1255,4 +1262,87 @@ header.sticky-header {
   background: var(--accent-red-dim);
   color: #ffffff;
   box-shadow: 0 0 12px var(--accent-red-glow);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   FOOTER
+───────────────────────────────────────────────────────────────────────────── */
+.vibeshift-footer {
+  margin-top: 40px;
+  border-top: 1px solid var(--panel-border);
+  padding: 20px 0 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+.vibeshift-footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-red), transparent);
+  opacity: 0.5;
+}
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.footer-brand {
+  color: var(--accent-red);
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.25em;
+  text-shadow: 0 0 8px var(--accent-red-glow);
+}
+
+.footer-divider {
+  color: var(--panel-border);
+  font-weight: 300;
+}
+
+.footer-copy {
+  color: var(--text-muted);
+}
+
+.footer-credit {
+  color: var(--text-muted);
+}
+
+.footer-author {
+  color: #ffffff;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+.footer-author:hover {
+  color: var(--accent-red);
+  text-shadow: 0 0 10px var(--accent-red-glow);
+}
+
+.footer-sub {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  opacity: 0.45;
+  text-transform: uppercase;
+  text-align: center;
 }

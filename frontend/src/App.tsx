@@ -218,6 +218,15 @@ export default function App() {
   };
 
   const debounceTimeoutRef = useRef<number | null>(null);
+  // Track recently played IDs (up to 20) — stored in a ref to avoid re-renders
+  const recentPlayedIdsRef = useRef<string[]>([]);
+
+  const handleTrackPlay = (trackId: string) => {
+    const ids = recentPlayedIdsRef.current;
+    // Remove if already present to avoid duplicates, then prepend
+    const filtered = ids.filter(id => id !== trackId);
+    recentPlayedIdsRef.current = [trackId, ...filtered].slice(0, 20);
+  };
 
 
 
@@ -284,15 +293,16 @@ export default function App() {
           instrumentalness: instrumentalVal,
           tempo: finalBpm,
           danceability: finalDance,
-          language: currentVibe.language
+          language: currentVibe.language,
+          weather: currentVibe.weather,
+          played: recentPlayedIdsRef.current.join(',')
         }
       });
 
       setTracks(response.data.tracks);
-      setSource(response.data.source);
+      setSource(response.data.source as 'spotify_api' | 'simulated_database');
     } catch (error) {
-      console.warn("Backend API request failed. Using local client fallback filters:", error);
-      // Backend is down, perform client-side filter
+      console.warn("Backend API request failed. Using local client fallback:", error);
       const clientMockTracks = filterLocalMock(currentVibe);
       setTracks(clientMockTracks);
       setSource('simulated_database');
@@ -470,6 +480,7 @@ export default function App() {
               source={source}
               onPublishToGallery={handlePublishToGallery}
               loading={loading}
+              onTrackPlay={handleTrackPlay}
             />
 
             {/* Spektrum Oscilloscope Visualizer module */}
@@ -487,6 +498,18 @@ export default function App() {
             onRefresh={refreshGallery}
           />
         </div>
+
+        {/* FOOTER */}
+        <footer className="vibeshift-footer">
+          <div className="footer-inner">
+            <span className="footer-brand">VIBESHIFT</span>
+            <span className="footer-divider">//</span>
+            <span className="footer-copy">© {new Date().getFullYear()} ALL RIGHTS RESERVED</span>
+            <span className="footer-divider">·</span>
+            <span className="footer-credit">CRAFTED BY <strong className="footer-author">ADVAITH</strong></span>
+          </div>
+          <div className="footer-sub">SYNESTHETIC MUSIC DISCOVERY PLATFORM — POWERED BY YOUTUBE</div>
+        </footer>
       </div>
     </>
   );
