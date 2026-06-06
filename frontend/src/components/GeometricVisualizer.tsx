@@ -281,7 +281,7 @@ export const GeometricVisualizer: React.FC<GeometricVisualizerProps> = ({ vibe }
     const handleResize = () => {
       const rect = container.getBoundingClientRect();
       canvas.width = rect.width;
-      canvas.height = 120; // Set explicit height for panel visualizer
+      canvas.height = 260; // Set explicit height for panel visualizer
     };
 
     handleResize();
@@ -299,7 +299,7 @@ export const GeometricVisualizer: React.FC<GeometricVisualizerProps> = ({ vibe }
           CLICK INTERFACE TO STIMULATE
         </span>
       </div>
-      <div ref={containerRef} className="border border-red-950 bg-black overflow-hidden relative cursor-pointer" style={{ height: '120px' }}>
+      <div ref={containerRef} className="border border-red-950 bg-black overflow-hidden relative cursor-pointer" style={{ height: '260px' }}>
         <canvas
           ref={canvasRef}
           onClick={handleCanvasClick}
