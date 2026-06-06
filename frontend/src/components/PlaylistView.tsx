@@ -338,27 +338,27 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
                   </div>
                 </div>
                 
-                <div className="flex items-center gap-1.5">
+                <div className="tape-deck-controls">
                   <button 
                     onClick={handlePrevTrack} 
-                    className="w-7 h-7 border border-red-900 bg-black hover:bg-red-950/40 text-red-500 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+                    className="tape-deck-btn"
                     title="PREVIOUS TRACK"
                   >
-                    <SkipBack size={11} className="fill-current" />
+                    <SkipBack size={15} className="fill-current" />
                   </button>
                   <button 
                     onClick={() => handleTrackClick(activeTrack)} 
-                    className="w-8 h-8 border border-red-600 bg-red-950/20 hover:bg-red-950/50 text-red-500 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+                    className="tape-deck-btn play-btn"
                     title={isPlaying ? "PAUSE PREVIEW" : "PLAY PREVIEW"}
                   >
-                    {isPlaying ? <Pause size={12} className="fill-current" /> : <Play size={12} className="fill-current" />}
+                    {isPlaying ? <Pause size={18} className="fill-current" /> : <Play size={18} className="fill-current" />}
                   </button>
                   <button 
                     onClick={handleNextTrack} 
-                    className="w-7 h-7 border border-red-900 bg-black hover:bg-red-950/40 text-red-500 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+                    className="tape-deck-btn"
                     title="NEXT TRACK"
                   >
-                    <SkipForward size={11} className="fill-current" />
+                    <SkipForward size={15} className="fill-current" />
                   </button>
                 </div>
               </div>

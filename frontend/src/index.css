@@ -1217,3 +1217,42 @@ header.sticky-header {
   color: rgba(0, 246, 255, 0.8) !important;
   text-shadow: 0 0 8px rgba(0, 246, 255, 0.2);
 }
+/* 📼 Tape-Deck Media Playback Console Controls styling */
+.tape-deck-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tape-deck-btn {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #3f0f15; /* dark red border */
+  background: #000000;
+  color: var(--accent-red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.tape-deck-btn:hover {
+  background: var(--accent-red-dim);
+  color: #ffffff;
+  border-color: var(--accent-red);
+  box-shadow: 0 0 10px rgba(255, 0, 60, 0.2);
+}
+
+.tape-deck-btn.play-btn {
+  width: 42px;
+  height: 42px;
+  border-color: var(--accent-red);
+  background: rgba(255, 0, 60, 0.05);
+}
+
+.tape-deck-btn.play-btn:hover {
+  background: var(--accent-red-dim);
+  color: #ffffff;
+  box-shadow: 0 0 12px var(--accent-red-glow);
+}
