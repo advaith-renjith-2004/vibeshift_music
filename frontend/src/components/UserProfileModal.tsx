@@ -236,7 +236,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ user, onClos
                   Visual Avatar URL (Custom Web Link)
                 </label>
                 <input
-                  type="url"
+                  type="text"
                   value={editedAvatar}
                   onChange={e => setEditedAvatar(e.target.value)}
                   placeholder="https://example.com/photo.jpg"
