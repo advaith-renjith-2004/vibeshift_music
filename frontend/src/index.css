@@ -220,6 +220,81 @@ header.sticky-header {
   font-weight: 500;
 }
 
+/* Header Actions Container and Buttons */
+.header-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.header-profile-btn {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  border-radius: 0px;
+  text-decoration: none;
+}
+
+.header-profile-btn:hover {
+  background: var(--accent-dim);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+.header-profile-btn .profile-text {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-secondary);
+  transition: var(--transition-smooth);
+}
+
+.header-profile-btn:hover .profile-text {
+  color: var(--text-primary);
+}
+
+.header-profile-btn svg {
+  color: var(--accent-color);
+  transition: var(--transition-smooth);
+}
+
+.header-profile-btn:hover svg {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 4px var(--accent-glow));
+}
+
+.header-youtube-status {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 0px;
+  transition: var(--transition-smooth);
+}
+
+.header-youtube-status .youtube-text {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-secondary);
+}
+
+.header-youtube-status svg {
+  color: var(--accent-color);
+}
+
 /* Main Dashboard Workspace */
 .dashboard-grid {
   display: grid;
@@ -1315,8 +1390,7 @@ header.sticky-header {
   transition: transform 0.15s cubic-bezier(0.25, 1, 0.5, 1), color 0.25s ease, letter-spacing 0.08s ease-out;
 }
 
-.sticky-header .spotify-user-status,
-.sticky-header .btn-spotify {
+.sticky-header .header-actions {
   transform: translate3d(calc(var(--tx, 0px) * -0.6), calc(var(--ty, 0px) * -0.6), 15px);
   transition: transform 0.15s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.3s ease, box-shadow 0.3s ease;
 }

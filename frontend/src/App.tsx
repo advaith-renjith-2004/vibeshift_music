@@ -497,30 +497,29 @@ export default function App() {
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="header-actions">
             {/* USER PROFILE BUTTON */}
             <button 
               onClick={() => setShowProfileModal(true)}
-              className="glass-panel py-2 px-3 flex items-center gap-2 hover:bg-red-500/10 transition-colors group"
+              className="header-profile-btn"
             >
-              <User size={14} style={{ color: 'var(--accent-color)' }} />
-              <span className="font-mono text-[10px] text-slate-300 group-hover:text-white">
+              <User size={14} />
+              <span className="profile-text">
                 PROFILE
               </span>
             </button>
 
-            <div className="spotify-user-status glass-panel py-2.5 px-4 flex items-center gap-2">
+            <div className="header-youtube-status">
               <svg 
                 viewBox="0 0 24 24" 
-                width="16" 
-                height="16" 
+                width="14" 
+                height="14" 
                 fill="currentColor"
-                style={{ color: 'var(--accent-color)' }}
               >
                 <path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.11C19.517 3.545 12 3.545 12 3.545s-7.517 0-9.388.508a3.003 3.003 0 0 0-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 0 0 2.11 2.11c1.871.508 9.388.508 9.388.508s7.517 0 9.388-.508a3.003 3.003 0 0 0 2.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
               </svg>
-              <span className="font-mono text-xs text-slate-300">
-                <strong>YOUTUBE</strong>
+              <span className="youtube-text">
+                YOUTUBE
               </span>
             </div>
           </div>
