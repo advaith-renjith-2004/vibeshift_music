@@ -503,13 +503,7 @@ export default function App() {
               onClick={() => setShowProfileModal(true)}
               className="glass-panel py-2 px-3 flex items-center gap-2 hover:bg-red-500/10 transition-colors group"
             >
-              <div className="w-5 h-5 bg-red-950/40 flex items-center justify-center rounded-sm overflow-hidden">
-                {user?.avatarUrl ? (
-                  <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
-                ) : (
-                  <User size={14} className="text-red-500" />
-                )}
-              </div>
+              <User size={14} style={{ color: 'var(--accent-color)' }} />
               <span className="font-mono text-[10px] text-slate-300 group-hover:text-white">
                 {user ? user.name.toUpperCase() : 'PROFILE'}
               </span>
