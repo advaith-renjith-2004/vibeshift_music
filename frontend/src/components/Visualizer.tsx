@@ -1,0 +1,238 @@
+import React, { useEffect, useRef } from 'react';
+import * as THREE from 'three';
+import type { VibeState } from '../types';
+
+interface VisualizerProps {
+  vibe: VibeState;
+}
+
+// Custom Fragment Shader for organic fluid plasma movement
+const fragmentShader = `
+  uniform float u_time;
+  uniform vec2 u_resolution;
+  uniform float u_energy;
+  uniform float u_valence;
+  uniform float u_color_temp;
+  uniform float u_weather; // 0.0 (thunder) to 1.0 (radiant)
+
+  // 2D Simplex Noise generator
+  vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
+
+  float snoise(vec2 v){
+    const vec4 C = vec4(0.211324865405187, 0.366025403784439,
+             -0.577350269189626, 0.024390243902439);
+    vec2 i  = floor(v + dot(v, C.yy) );
+    vec2 x0 = v -   i + dot(i, C.xx);
+    vec2 i1;
+    i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+    vec4 x12 = x0.xyxy + C.xxzz;
+    x12.xy -= i1;
+    i = mod(i, 289.0);
+    vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 ))
+    + i.x + vec3(0.0, i1.x, 1.0 ));
+    vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy),
+      dot(x12.zw,x12.zw)), 0.0);
+    m = m*m ;
+    m = m*m ;
+    vec3 x = 2.0 * fract(p * C.www) - 1.0;
+    vec3 h = abs(x) - 0.5;
+    vec3 a0 = x - floor(x + 0.5);
+    vec3 g = a0.xyw * x0.x + h.xyw * x0.y;
+    a0.zw = a0.zw * x12.xz + h.zw * x12.yw;
+    vec3 s = floor(a0) * 2.0 + 1.0;
+    vec3 sh = -step(h, vec3(0.0));
+    vec3 a1 = a0.xzyw + s.xzyw*sh.xzyw ;
+    vec3 vec_p = vec3(a1.xy, h.z);
+    vec3 vec_h = vec3(a1.zw, h.w);
+    vec3 g0 = vec_p * vec3(x0.x, x0.y, 1.0);
+    vec3 g1 = vec_h * vec3(x12.x, x12.y, 1.0);
+    vec3 g2 = vec_h * vec3(x12.z, x12.w, 1.0);
+    vec3 norm = 1.79284291400159 - 0.85373472095314 * 
+      vec3(dot(g0,g0), dot(g1,g1), dot(g2, g2)); // Modified variable name to avoid reserved word collision
+    vec3 val = vec3(dot(g0,x0), dot(g1,x12.xy), dot(g2,x12.zw));
+    return 130.0 * dot(m * norm * val, vec3(1.0));
+  }
+
+  void main() {
+    vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+    
+    // Scale coordinates for noise
+    vec2 st = uv * 3.0;
+    
+    // Speed is governed by Energy
+    float speed = (0.1 + u_energy * 0.9) * 0.4;
+    float time = u_time * speed;
+    
+    // Generate layered noise
+    float n1 = snoise(st + vec2(time * 0.5, time * 0.3));
+    float n2 = snoise(st * 2.0 - vec2(time * 0.2, -time * 0.4));
+    float combinedNoise = (n1 + n2 * 0.5) / 1.5;
+    
+    // Define Color Palettes based on Color Temperature
+    // Cool/Dark (0.0): Deep Purple, Indigo, Dark Navy
+    // Warm/Bright (1.0): Radiant Orange, Ruby Red, Golden Amber
+    
+    vec3 coolColor1 = vec3(0.05, 0.05, 0.25); // Deep Indigo
+    vec3 coolColor2 = vec3(0.3, 0.1, 0.5);    // Neon Violet
+    vec3 coolColor3 = vec3(0.1, 0.4, 0.6);    // Slate Blue
+
+    vec3 warmColor1 = vec3(0.6, 0.1, 0.1);    // Deep Red
+    vec3 warmColor2 = vec3(0.95, 0.4, 0.1);   // Amber Orange
+    vec3 warmColor3 = vec3(0.95, 0.8, 0.2);   // Sun Gold
+    
+    // Interpolate palettes based on u_color_temp
+    vec3 colorA = mix(coolColor1, warmColor1, u_color_temp);
+    vec3 colorB = mix(coolColor2, warmColor2, u_color_temp);
+    vec3 colorC = mix(coolColor3, warmColor3, u_color_temp);
+    
+    // Blend final background colors using noise
+    vec3 finalColor = mix(colorA, colorB, combinedNoise * 0.5 + 0.5);
+    finalColor = mix(finalColor, colorC, snoise(st * 0.5 + vec2(time * 0.1)) * 0.5 + 0.5);
+    
+    // Modify brightness and saturation based on Valence (Melancholy to Euphoria)
+    // Low Valence = desaturated & dark. High Valence = vibrant & glowing.
+    float brightness = 0.4 + u_valence * 0.7;
+    float saturation = 0.3 + u_valence * 0.7;
+    
+    // Convert to Grayscale for saturation adjustments
+    float gray = dot(finalColor, vec3(0.299, 0.587, 0.114));
+    finalColor = mix(vec3(gray), finalColor, saturation) * brightness;
+    
+    // Add Weather atmospheric overrides
+    // 0.0 (Thunder): Stormy gray overlay + flickering lightning noise
+    // 0.25 (Rain): Darker overlay + diagonal rain-streak noise lines
+    // 0.75-1.0 (Clear-Radiant): Sunlight glow vignette
+    if (u_weather < 0.2) {
+      // Thunder: Add desaturation and random high-frequency brightness flash
+      finalColor = mix(finalColor, vec3(0.12, 0.12, 0.18), 0.35);
+      
+      // Simulating a lightning stroke
+      float flash = step(0.992, fract(sin(u_time * 1.5) * 43758.5453));
+      finalColor += vec3(flash * 0.3);
+    } else if (u_weather < 0.45) {
+      // Rain: Darker slate teal tint
+      finalColor = mix(finalColor, vec3(0.08, 0.18, 0.22), 0.25);
+    } else if (u_weather > 0.85) {
+      // Radiant: Sun flare glow vignette in the center
+      float distFromCenter = distance(uv, vec2(0.5));
+      float sunGlow = smoothstep(0.8, 0.0, distFromCenter) * 0.18;
+      finalColor += vec3(1.0, 0.85, 0.6) * sunGlow;
+    }
+    
+    gl_FragColor = vec4(finalColor, 1.0);
+  }
+`;
+
+// Simple Vertex Shader
+const vertexShader = `
+  void main() {
+    gl_Position = vec4(position, 1.0);
+  }
+`;
+
+export const Visualizer: React.FC<VisualizerProps> = ({ vibe }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const uniformsRef = useRef<{
+    u_time: { value: number };
+    u_resolution: { value: THREE.Vector2 };
+    u_energy: { value: number };
+    u_valence: { value: number };
+    u_color_temp: { value: number };
+    u_weather: { value: number };
+  }>({
+    u_time: { value: 0 },
+    u_resolution: { value: new THREE.Vector2() },
+    u_energy: { value: vibe.energy },
+    u_valence: { value: vibe.valence },
+    u_color_temp: { value: vibe.colorTemp },
+    u_weather: { value: 0.5 } // Default to cloudy
+  });
+
+  // Map weather strings to numerical value
+  const getWeatherValue = (w: string): number => {
+    switch (w) {
+      case 'thunderstorm': return 0.0;
+      case 'rain': return 0.25;
+      case 'cloudy': return 0.5;
+      case 'clear': return 0.75;
+      case 'radiant': return 1.0;
+      default: return 0.5;
+    }
+  };
+
+  // Sync uniforms on vibe changes
+  useEffect(() => {
+    uniformsRef.current.u_energy.value = vibe.energy;
+    uniformsRef.current.u_valence.value = vibe.valence;
+    uniformsRef.current.u_color_temp.value = vibe.colorTemp;
+    uniformsRef.current.u_weather.value = getWeatherValue(vibe.weather);
+  }, [vibe]);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    // Create scene, camera, renderer
+    const scene = new THREE.Scene();
+    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    const renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: "high-performance" });
+    
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Cap at 2 for performance
+    containerRef.current.appendChild(renderer.domElement);
+
+    uniformsRef.current.u_resolution.value.set(width * renderer.getPixelRatio(), height * renderer.getPixelRatio());
+
+    // Create quad covering full screen
+    const geometry = new THREE.PlaneGeometry(2, 2);
+    const material = new THREE.ShaderMaterial({
+      vertexShader,
+      fragmentShader,
+      uniforms: uniformsRef.current,
+      depthWrite: false,
+      depthTest: false
+    });
+
+    const mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
+
+    // Animation Loop
+    const clock = new THREE.Clock();
+    let animationFrameId: number;
+
+    const animate = () => {
+      uniformsRef.current.u_time.value = clock.getElapsedTime();
+      renderer.render(scene, camera);
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    // Handle resize
+    const handleResize = () => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      renderer.setSize(w, h);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      uniformsRef.current.u_resolution.value.set(w * renderer.getPixelRatio(), h * renderer.getPixelRatio());
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    // Cleanup
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('resize', handleResize);
+      if (containerRef.current && renderer.domElement) {
+        containerRef.current.removeChild(renderer.domElement);
+      }
+      geometry.dispose();
+      material.dispose();
+      renderer.dispose();
+    };
+  }, []);
+
+  return <div ref={containerRef} className="visualizer-container" />;
+};
