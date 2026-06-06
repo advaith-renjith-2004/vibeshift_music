@@ -91,8 +91,8 @@ export const TextureSelector: React.FC<TextureSelectorProps> = ({
     <div className="vocal-selector-container">
       <div className="flex justify-between items-center">
         <h3 className="vibe-grid-title">
-          <Globe size={18} className="text-purple-400" />
-          Vocal & Linguistic Texture
+          <Globe size={18} className="text-red-500" />
+          VOCAL &amp; LINGUISTIC TEXTURE
         </h3>
       </div>
 
@@ -103,11 +103,11 @@ export const TextureSelector: React.FC<TextureSelectorProps> = ({
             onClick={() => handleTextureClick(opt)}
             className={`vocal-card ${activeTextureId === opt.id ? 'active' : ''}`}
           >
-            <span className={activeTextureId === opt.id ? 'text-indigo-400' : 'text-slate-400'}>
+            <span className={activeTextureId === opt.id ? 'text-red-500' : 'text-slate-400'}>
               {opt.icon}
             </span>
-            <h4>{opt.title}</h4>
-            <p>{opt.desc}</p>
+            <h4>{opt.title.toUpperCase()}</h4>
+            <p>{opt.desc.toUpperCase()}</p>
           </div>
         ))}
       </div>
@@ -116,7 +116,7 @@ export const TextureSelector: React.FC<TextureSelectorProps> = ({
       {activeTextureId === 'familiar' && (
         <div className="language-subselector">
           <span className="text-[11px] text-slate-400 font-mono font-bold uppercase tracking-wider">
-            Select Language/Dialect:
+            SELECT LANGUAGE/DIALECT:
           </span>
           <div className="language-list">
             {subLanguages.familiar.map(lang => (
@@ -125,7 +125,7 @@ export const TextureSelector: React.FC<TextureSelectorProps> = ({
                 onClick={() => onChange(lang.code)}
                 className={`language-btn ${selectedLanguage === lang.code ? 'active' : ''}`}
               >
-                {lang.label}
+                {lang.label.toUpperCase()}
               </button>
             ))}
           </div>
@@ -136,7 +136,7 @@ export const TextureSelector: React.FC<TextureSelectorProps> = ({
       {activeTextureId === 'flowing' && (
         <div className="language-subselector">
           <span className="text-[11px] text-slate-400 font-mono font-bold uppercase tracking-wider">
-            Select Romance Dialect:
+            SELECT ROMANCE DIALECT:
           </span>
           <div className="language-list">
             {subLanguages.flowing.map(lang => (
@@ -145,7 +145,7 @@ export const TextureSelector: React.FC<TextureSelectorProps> = ({
                 onClick={() => onChange(lang.code)}
                 className={`language-btn ${selectedLanguage === lang.code ? 'active' : ''}`}
               >
-                {lang.label}
+                {lang.label.toUpperCase()}
               </button>
             ))}
           </div>
@@ -156,7 +156,7 @@ export const TextureSelector: React.FC<TextureSelectorProps> = ({
       {activeTextureId === 'wanderlust' && (
         <div className="language-subselector">
           <span className="text-[11px] text-slate-400 font-mono font-bold uppercase tracking-wider">
-            Select Global Aesthetic:
+            SELECT GLOBAL AESTHETIC:
           </span>
           <div className="language-list">
             {subLanguages.wanderlust.map(lang => (
@@ -165,7 +165,7 @@ export const TextureSelector: React.FC<TextureSelectorProps> = ({
                 onClick={() => onChange(lang.code)}
                 className={`language-btn ${selectedLanguage === lang.code ? 'active' : ''}`}
               >
-                {lang.label}
+                {lang.label.toUpperCase()}
               </button>
             ))}
           </div>

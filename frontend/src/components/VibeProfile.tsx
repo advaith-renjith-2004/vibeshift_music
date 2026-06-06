@@ -70,47 +70,47 @@ export const VibeProfile: React.FC<VibeProfileProps> = ({ vibe }) => {
 
   const metrics = [
     {
-      name: 'Target Energy',
+      name: 'TARGET ENERGY',
       value: `${(energyVal * 100).toFixed(0)}%`,
       percentage: energyVal * 100,
-      icon: <Flame size={14} className="text-orange-400" />,
-      color: 'var(--accent-orange)'
+      icon: <Flame size={14} className="text-red-500" />,
+      color: 'var(--accent-red)'
     },
     {
-      name: 'Target Valence',
+      name: 'TARGET VALENCE',
       value: `${(valenceVal * 100).toFixed(0)}%`,
       percentage: valenceVal * 100,
-      icon: <Activity size={14} className="text-pink-400" />,
-      color: 'var(--accent-pink)'
+      icon: <Activity size={14} className="text-red-500" />,
+      color: 'var(--accent-red)'
     },
     {
-      name: 'Tempo (BPM)',
+      name: 'TEMPO (BPM)',
       value: `${finalBpm} BPM`,
       // Map BPM from 50 to 180 range to percentage
       percentage: Math.max(0, Math.min(100, ((finalBpm - 50) / 130) * 100)),
-      icon: <SlidersIcon size={14} className="text-blue-400" />,
-      color: 'var(--accent-blue)'
+      icon: <SlidersIcon size={14} className="text-red-500" />,
+      color: 'var(--accent-red)'
     },
     {
-      name: 'Acousticness',
+      name: 'ACOUSTICNESS',
       value: `${(acousticVal * 100).toFixed(0)}%`,
       percentage: acousticVal * 100,
-      icon: <Music size={14} className="text-emerald-400" />,
-      color: 'var(--accent-green)'
+      icon: <Music size={14} className="text-red-500" />,
+      color: 'var(--accent-red)'
     },
     {
-      name: 'Danceability',
+      name: 'DANCEABILITY',
       value: `${(finalDanceability * 100).toFixed(0)}%`,
       percentage: finalDanceability * 100,
-      icon: <Flame size={14} className="text-yellow-400" />,
-      color: 'var(--accent-orange)'
+      icon: <Flame size={14} className="text-red-500" />,
+      color: 'var(--accent-red)'
     },
     {
-      name: 'Instrumentalness',
+      name: 'INSTRUMENTALNESS',
       value: `${(instrumentalVal * 100).toFixed(0)}%`,
       percentage: instrumentalVal * 100,
-      icon: <HelpCircle size={14} className="text-purple-400" />,
-      color: 'var(--accent-purple)'
+      icon: <HelpCircle size={14} className="text-red-500" />,
+      color: 'var(--accent-red)'
     }
   ];
 
@@ -118,11 +118,11 @@ export const VibeProfile: React.FC<VibeProfileProps> = ({ vibe }) => {
     <div className="vibe-profile-container">
       <div className="flex justify-between items-center">
         <h3 className="vibe-grid-title">
-          <Eye size={18} className="text-purple-400" />
-          Vibe Profile
+          <Eye size={18} className="text-red-500" />
+          VIBE PROFILE
         </h3>
         <span className="text-xs text-slate-400 font-mono">
-          Decoded sound metrics
+          DECODED SOUND METRICS
         </span>
       </div>
 
@@ -143,8 +143,8 @@ export const VibeProfile: React.FC<VibeProfileProps> = ({ vibe }) => {
                 className="metric-bar-fill"
                 style={{
                   width: `${metric.percentage}%`,
-                  background: metric.color,
-                  boxShadow: `0 0 8px ${metric.color}`
+                  background: `repeating-linear-gradient(90deg, ${metric.color}, ${metric.color} 3px, transparent 3px, transparent 5px)`,
+                  boxShadow: `0 0 4px ${metric.color}`
                 }}
               />
             </div>

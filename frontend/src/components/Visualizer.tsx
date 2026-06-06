@@ -68,26 +68,34 @@ const fragmentShader = `
     float n2 = snoise(st * 2.0 - vec2(time * 0.2, -time * 0.4));
     float combinedNoise = (n1 + n2 * 0.5) / 1.5;
     
-    // Define Color Palettes based on Color Temperature
-    // Cool/Dark (0.0): Deep Purple, Indigo, Dark Navy
-    // Warm/Bright (1.0): Radiant Orange, Ruby Red, Golden Amber
-    
-    vec3 coolColor1 = vec3(0.05, 0.05, 0.25); // Deep Indigo
-    vec3 coolColor2 = vec3(0.3, 0.1, 0.5);    // Neon Violet
-    vec3 coolColor3 = vec3(0.1, 0.4, 0.6);    // Slate Blue
+    // Charcoal grey & smoke colors for the background body
+    vec3 smokeDark = vec3(0.005, 0.005, 0.008);
+    vec3 smokeMedium = vec3(0.015, 0.015, 0.02);
+    vec3 smokeLight = vec3(0.04, 0.035, 0.045);
 
-    vec3 warmColor1 = vec3(0.6, 0.1, 0.1);    // Deep Red
-    vec3 warmColor2 = vec3(0.95, 0.4, 0.1);   // Amber Orange
-    vec3 warmColor3 = vec3(0.95, 0.8, 0.2);   // Sun Gold
+    // Glowing hot/toxic red currents
+    vec3 toxicRed = vec3(1.0, 0.0, 0.235);    // #ff003c
+    vec3 deepRed = vec3(0.35, 0.0, 0.05);      // Deep Crimson
+    vec3 brightAmber = vec3(0.95, 0.3, 0.0);   // Glowing Warm Orange-Red
     
-    // Interpolate palettes based on u_color_temp
-    vec3 colorA = mix(coolColor1, warmColor1, u_color_temp);
-    vec3 colorB = mix(coolColor2, warmColor2, u_color_temp);
-    vec3 colorC = mix(coolColor3, warmColor3, u_color_temp);
+    // Blend smoke base using noise
+    vec3 baseSmoke = mix(smokeDark, smokeMedium, combinedNoise * 0.5 + 0.5);
+    baseSmoke = mix(baseSmoke, smokeLight, snoise(st * 0.5 + vec2(time * 0.1)) * 0.5 + 0.5);
     
-    // Blend final background colors using noise
-    vec3 finalColor = mix(colorA, colorB, combinedNoise * 0.5 + 0.5);
-    finalColor = mix(finalColor, colorC, snoise(st * 0.5 + vec2(time * 0.1)) * 0.5 + 0.5);
+    // Define the glow current color based on temperature slider
+    // High temp = hotter orange-red / toxic red, Low temp = deeper crimson / cold red
+    vec3 glowColor = mix(deepRed, mix(toxicRed, brightAmber, u_color_temp), u_color_temp);
+
+    // Compute active glowing flows from the noise channels
+    // Higher energy creates tighter, more violent glowing veins
+    float flowTension = 2.0 - u_energy * 1.5;
+    float flowNoise = sin(combinedNoise * 10.0 * flowTension + time * 2.0) * 0.5 + 0.5;
+    
+    // Combine noise intensity and flow tension
+    float flowStrength = pow(flowNoise, 4.0) * (0.05 + u_energy * 0.9);
+    
+    // Mix the base smoke with the glowing veins
+    vec3 finalColor = mix(baseSmoke, glowColor, flowStrength * 0.45);
     
     // Modify brightness and saturation based on Valence (Melancholy to Euphoria)
     // Low Valence = desaturated & dark. High Valence = vibrant & glowing.
@@ -104,19 +112,19 @@ const fragmentShader = `
     // 0.75-1.0 (Clear-Radiant): Sunlight glow vignette
     if (u_weather < 0.2) {
       // Thunder: Add desaturation and random high-frequency brightness flash
-      finalColor = mix(finalColor, vec3(0.12, 0.12, 0.18), 0.35);
+      finalColor = mix(finalColor, vec3(0.05, 0.05, 0.06), 0.35);
       
       // Simulating a lightning stroke
       float flash = step(0.992, fract(sin(u_time * 1.5) * 43758.5453));
-      finalColor += vec3(flash * 0.3);
+      finalColor += vec3(flash * 0.25);
     } else if (u_weather < 0.45) {
       // Rain: Darker slate teal tint
-      finalColor = mix(finalColor, vec3(0.08, 0.18, 0.22), 0.25);
+      finalColor = mix(finalColor, vec3(0.02, 0.05, 0.07), 0.25);
     } else if (u_weather > 0.85) {
       // Radiant: Sun flare glow vignette in the center
       float distFromCenter = distance(uv, vec2(0.5));
       float sunGlow = smoothstep(0.8, 0.0, distFromCenter) * 0.18;
-      finalColor += vec3(1.0, 0.85, 0.6) * sunGlow;
+      finalColor += vec3(1.0, 0.0, 0.235) * sunGlow * u_color_temp;
     }
     
     gl_FragColor = vec4(finalColor, 1.0);

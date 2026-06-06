@@ -276,6 +276,9 @@ export default function App() {
 
   return (
     <>
+      {/* Moving Film Grain Overlay */}
+      <div className="grain-overlay" />
+
       {/* 3D WEBGL SHADER BACKGROUND */}
       <Visualizer vibe={vibe} />
       <div className="visualizer-overlay" />
@@ -285,21 +288,21 @@ export default function App() {
         <header>
           <div className="brand">
             <h1 className="flex items-center gap-2">
-              <Disc className="animate-spin text-purple-400" size={32} style={{ animationDuration: '4s' }} />
-              VibeShift
+              <Disc className="animate-spin text-red-600" size={32} style={{ animationDuration: '4s' }} />
+              VIBESHIFT
             </h1>
-            <p>Synesthetic Music Discovery Platform</p>
+            <p>SYNESTHETIC MUSIC DISCOVERY PLATFORM</p>
           </div>
 
           {spotifyInfo ? (
-            <div className="spotify-user-status glass-panel py-2.5 px-4 rounded-xl flex items-center gap-3">
+            <div className="spotify-user-status glass-panel py-2.5 px-4 flex items-center gap-3">
               <span className="spotify-user-dot" />
               <span className="font-mono text-xs text-slate-300">
-                Connected: <strong>{spotifyInfo.userName}</strong>
+                CONNECTED: <strong>{spotifyInfo.userName.toUpperCase()}</strong>
               </span>
               <button
                 onClick={handleLogout}
-                className="text-slate-400 hover:text-red-400 cursor-pointer transition-colors"
+                className="text-slate-400 hover:text-red-500 cursor-pointer transition-colors"
                 title="Disconnect Account"
               >
                 <LogOut size={14} />
@@ -308,9 +311,9 @@ export default function App() {
           ) : (
             <button
               onClick={() => window.location.href = `${BACKEND_URL}/api/login`}
-              className="btn btn-secondary btn-spotify text-xs py-2 px-4 rounded-xl font-bold"
+              className="btn btn-secondary btn-spotify text-xs py-2 px-4 font-bold"
             >
-              Connect Spotify
+              CONNECT SPOTIFY
             </button>
           )}
         </header>
@@ -320,7 +323,7 @@ export default function App() {
           {/* LEFT COLUMN: CONTROLS */}
           <div className="controls-column">
             {/* VIBE GRID */}
-            <div className="glass-panel">
+            <div className="glass-panel" data-index="01 CONTROL">
               <VibeGrid
                 energy={vibe.energy}
                 valence={vibe.valence}
@@ -329,7 +332,7 @@ export default function App() {
             </div>
 
             {/* ATMOSPHERIC SLIDERS */}
-            <div className="glass-panel">
+            <div className="glass-panel" data-index="02 ATMOSPHERE">
               <Sliders
                 weather={vibe.weather}
                 colorTemp={vibe.colorTemp}
@@ -339,7 +342,7 @@ export default function App() {
             </div>
 
             {/* VOCAL TEXTURE SELECTOR */}
-            <div className="glass-panel">
+            <div className="glass-panel" data-index="03 TEXTURE">
               <TextureSelector
                 selectedLanguage={vibe.language}
                 onChange={lang => setVibe(prev => ({ ...prev, language: lang }))}
@@ -347,7 +350,7 @@ export default function App() {
             </div>
 
             {/* VIBE PROFILE METERS */}
-            <div className="glass-panel">
+            <div className="glass-panel" data-index="04 METRICS">
               <VibeProfile vibe={vibe} />
             </div>
           </div>
@@ -366,7 +369,7 @@ export default function App() {
         </div>
 
         {/* BOTTOM SECTION: COMMUNITY FEED */}
-        <div className="mt-8">
+        <div className="mt-8 glass-panel" data-index="06 REGISTRY">
           <VibeGallery
             items={gallery}
             onLoadVibe={handleLoadVibe}

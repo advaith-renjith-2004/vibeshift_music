@@ -26,9 +26,9 @@ export const VibeGrid: React.FC<VibeGridProps> = ({ energy, valence, onChange })
     ctx.clearRect(0, 0, width, height);
 
     // Draw Grid Lines (Subtle background grid)
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
     ctx.lineWidth = 1;
-    const gridSize = 8;
+    const gridSize = 10;
     for (let i = 1; i < gridSize; i++) {
       const x = (width / gridSize) * i;
       ctx.beginPath();
@@ -44,9 +44,8 @@ export const VibeGrid: React.FC<VibeGridProps> = ({ energy, valence, onChange })
     }
 
     // Draw Major Center Crosshairs
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
-    ctx.lineWidth = 1.5;
-    ctx.setLineDash([4, 4]); // Dashed line for technical look
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+    ctx.lineWidth = 1;
     
     // Horizontal Center
     ctx.beginPath();
@@ -59,11 +58,10 @@ export const VibeGrid: React.FC<VibeGridProps> = ({ energy, valence, onChange })
     ctx.moveTo(width / 2, 0);
     ctx.lineTo(width / 2, height);
     ctx.stroke();
-    ctx.setLineDash([]); // Reset dash
 
     // Draw Labels on the grid edges
     ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
-    ctx.font = '500 11px Inter, system-ui, sans-serif';
+    ctx.font = '700 10px monospace';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
@@ -105,40 +103,50 @@ export const VibeGrid: React.FC<VibeGridProps> = ({ energy, valence, onChange })
     const dotX = energy * width;
     const dotY = (1 - valence) * height; // Invert Y coordinate
 
-    // Draw Radar rings around the dot
-    ctx.strokeStyle = 'rgba(139, 92, 246, 0.25)';
-    ctx.lineWidth = 1.5;
+    // Draw Reticle Targeting Rings (Toxic Red)
+    ctx.strokeStyle = 'rgba(255, 0, 60, 0.25)';
+    ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.arc(dotX, dotY, 24, 0, Math.PI * 2);
+    ctx.arc(dotX, dotY, 20, 0, Math.PI * 2);
     ctx.stroke();
 
-    ctx.strokeStyle = 'rgba(139, 92, 246, 0.1)';
+    ctx.strokeStyle = 'rgba(255, 0, 60, 0.5)';
+    ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.arc(dotX, dotY, 40, 0, Math.PI * 2);
+    ctx.arc(dotX, dotY, 8, 0, Math.PI * 2);
     ctx.stroke();
 
-    // Draw Glowing Dot Shadow
-    ctx.shadowColor = '#8b5cf6';
-    ctx.shadowBlur = 15;
+    // Draw Targeting Crosshairs
+    ctx.strokeStyle = 'rgba(255, 0, 60, 0.7)';
+    ctx.lineWidth = 1.2;
     
-    // Draw outer glowing core
-    ctx.fillStyle = 'rgba(139, 92, 246, 0.6)';
+    // Horizontal crosshair ticks
     ctx.beginPath();
-    ctx.arc(dotX, dotY, 12, 0, Math.PI * 2);
+    ctx.moveTo(dotX - 15, dotY);
+    ctx.lineTo(dotX - 4, dotY);
+    ctx.moveTo(dotX + 4, dotY);
+    ctx.lineTo(dotX + 15, dotY);
+    ctx.stroke();
+    
+    // Vertical crosshair ticks
+    ctx.beginPath();
+    ctx.moveTo(dotX, dotY - 15);
+    ctx.lineTo(dotX, dotY - 4);
+    ctx.moveTo(dotX, dotY + 4);
+    ctx.lineTo(dotX, dotY + 15);
+    ctx.stroke();
+
+    // Draw Inner red center dot
+    ctx.fillStyle = '#ff003c';
+    ctx.beginPath();
+    ctx.arc(dotX, dotY, 2.5, 0, Math.PI * 2);
     ctx.fill();
 
-    // Draw Inner white hot core
-    ctx.shadowBlur = 0; // Turn off shadow blur for inner core
-    ctx.fillStyle = '#ffffff';
-    ctx.beginPath();
-    ctx.arc(dotX, dotY, 6, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Draw subtle coordinate display overlay
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-    ctx.font = '10px Inter, system-ui, sans-serif';
+    // Draw coordinate label
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+    ctx.font = '9px monospace';
     ctx.textAlign = 'right';
-    ctx.fillText(`X: ${energy.toFixed(2)}  Y: ${valence.toFixed(2)}`, width - 15, height - 15);
+    ctx.fillText(`X:${energy.toFixed(3)} Y:${valence.toFixed(3)}`, width - 15, height - 15);
   };
 
   // Resize canvas to fill the wrapper element
@@ -208,11 +216,11 @@ export const VibeGrid: React.FC<VibeGridProps> = ({ energy, valence, onChange })
     <div className="vibe-grid-container">
       <div className="vibe-grid-header">
         <h3 className="vibe-grid-title">
-          <Activity size={18} className="text-purple-400" />
-          The Vibe Grid
+          <Activity size={18} className="text-red-500" />
+          THE VIBE GRID
         </h3>
         <span className="text-xs text-slate-400 font-mono">
-          Drag the dot to map your soundscape
+          DRAG THE RETICLE TO MAP COORDINATES
         </span>
       </div>
 

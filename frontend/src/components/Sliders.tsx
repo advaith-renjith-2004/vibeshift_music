@@ -39,10 +39,10 @@ export const Sliders: React.FC<SlidersProps> = ({
         <div className="slider-label">
           <span>
             {weatherList[currentWeatherIndex]?.icon}
-            Atmospheric Weather
+            ATMOSPHERIC WEATHER
           </span>
-          <span className="font-mono text-xs text-slate-400 font-bold capitalize">
-            {weather}
+          <span className="font-mono text-xs text-red-500 font-bold">
+            {weather.toUpperCase()}
           </span>
         </div>
         
@@ -64,7 +64,7 @@ export const Sliders: React.FC<SlidersProps> = ({
               className={`weather-state-dot ${weather === w.state ? 'active' : ''}`}
             >
               <span>{w.icon}</span>
-              <span className="text-[10px] hidden sm:inline">{w.label}</span>
+              <span className="text-[10px] hidden sm:inline">{w.label.toUpperCase()}</span>
             </div>
           ))}
         </div>
@@ -75,16 +75,17 @@ export const Sliders: React.FC<SlidersProps> = ({
         <div className="slider-label">
           <span>
             <span
-              className="w-3 h-3 rounded-full inline-block"
+              className="w-3.5 h-3.5 inline-block"
               style={{
-                background: `linear-gradient(to right, #3b82f6, #ef4444)`,
-                boxShadow: '0 0 8px rgba(239, 68, 68, 0.4)'
+                background: `linear-gradient(to right, #050508, #ff003c)`,
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                boxShadow: '0 0 6px rgba(255, 0, 60, 0.3)'
               }}
             />
-            Color Temperature
+            &nbsp;COLOR SPECTRUM (GRID TEMP)
           </span>
-          <span className="font-mono text-xs text-slate-400 font-bold">
-            {colorTemp < 0.3 ? 'Cool' : colorTemp > 0.7 ? 'Warm' : 'Neutral'} ({(colorTemp * 100).toFixed(0)}%)
+          <span className="font-mono text-xs text-red-500 font-bold">
+            {colorTemp < 0.3 ? 'COOL' : colorTemp > 0.7 ? 'WARM' : 'NEUTRAL'} ({(colorTemp * 100).toFixed(0)}%)
           </span>
         </div>
         
@@ -98,9 +99,9 @@ export const Sliders: React.FC<SlidersProps> = ({
           className="custom-range color-range"
         />
         
-        <div className="flex justify-between text-[10px] text-slate-400 font-mono">
-          <span>COOL (Blues / Purples)</span>
-          <span>WARM (Reds / Oranges)</span>
+        <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+          <span>COOL (DEEP SHADOWS)</span>
+          <span>WARM (TOXIC GLOW)</span>
         </div>
       </div>
     </div>

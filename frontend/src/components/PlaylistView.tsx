@@ -143,17 +143,17 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
   };
 
   return (
-    <div className="glass-panel h-full flex flex-col gap-4">
+    <div className="glass-panel h-full flex flex-col gap-4" data-index="05 DISPATCH">
       {/* HEADER SECTION */}
       <div className="playlist-header">
         <h3 className="vibe-grid-title">
-          <Music size={18} className="text-purple-400" />
-          Synesthetic Playlist
+          <Music size={18} className="text-red-500" />
+          DISCOVERED SOUNDS
         </h3>
         {!loading && tracks.length > 0 && (
           <span className={`playlist-source-tag ${source === 'spotify_api' ? 'source-spotify' : 'source-mock'}`}>
             <Disc size={12} className={source === 'spotify_api' ? 'animate-spin' : ''} />
-            {source === 'spotify_api' ? 'Spotify API' : 'Simulated Vibe'}
+            {source === 'spotify_api' ? 'SPOTIFY API' : 'SIMULATED VIBE'}
           </span>
         )}
       </div>
@@ -161,17 +161,17 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
       {/* TRACKS LIST */}
       {loading ? (
         <div className="flex-grow flex flex-col items-center justify-center py-20 gap-4">
-          <div className="w-12 h-12 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin" />
-          <p className="text-slate-400 text-sm font-mono animate-pulse">
-            Tuning into the environment...
+          <div className="w-12 h-12 border-4 border-red-950 border-t-red-600 rounded-none animate-spin" />
+          <p className="text-red-500 text-sm font-mono animate-pulse">
+            TRANSLATING VIBE TO WAVEFORMS...
           </p>
         </div>
       ) : tracks.length === 0 ? (
         <div className="flex-grow flex flex-col items-center justify-center py-20 gap-2 text-center">
-          <Music size={36} className="text-slate-600 mb-2" />
-          <p className="text-slate-300 font-medium">No tracks generated yet</p>
-          <p className="text-slate-500 text-xs max-w-xs">
-            Adjust the vibe grid or sliders to start discovering custom sounds.
+          <Music size={36} className="text-slate-700 mb-2" />
+          <p className="text-slate-300 font-bold uppercase tracking-wider">No tracks generated</p>
+          <p className="text-slate-500 text-xs max-w-xs uppercase font-mono">
+            ADJUST THE INTERACTION RETICLE OR SPECTRUM SLIDERS TO DECODE SOUNDS.
           </p>
         </div>
       ) : (
@@ -187,7 +187,7 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
                   {track.album.images?.[0] ? (
                     <img src={track.album.images[0].url} alt={track.name} />
                   ) : (
-                    <div className="w-full h-full bg-slate-800 flex items-center justify-center">
+                    <div className="w-full h-full bg-slate-900 flex items-center justify-center">
                       <Music size={16} />
                     </div>
                   )}
@@ -199,28 +199,78 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
                     )}
                   </div>
                 </div>
+
+                {/* Spinning Vinyl Disc next to active track */}
+                {activeTrack?.id === track.id && (
+                  <div className="vinyl-container">
+                    <div className="vinyl-disc">
+                      <div className="vinyl-center" />
+                    </div>
+                  </div>
+                )}
+
                 <div className="track-details">
                   <div className="track-name">{track.name}</div>
                   <div className="track-artist">
-                    {track.artists.map(a => a.name).join(', ')}
+                    {track.artists.map(a => a.name).join(', ').toUpperCase()}
                   </div>
                 </div>
                 {track.preview_url && activeTrack?.id === track.id && isPlaying && (
                   <div className="flex gap-[3px] items-end h-3 pr-2">
-                    <div className="w-[3px] bg-indigo-500 rounded-full animate-[pulse_0.8s_infinite_alternate]" style={{ height: '100%', animationDelay: '0.1s' }} />
-                    <div className="w-[3px] bg-purple-500 rounded-full animate-[pulse_0.8s_infinite_alternate]" style={{ height: '70%', animationDelay: '0.3s' }} />
-                    <div className="w-[3px] bg-pink-500 rounded-full animate-[pulse_0.8s_infinite_alternate]" style={{ height: '90%', animationDelay: '0.5s' }} />
+                    <div className="w-[3px] bg-red-600 animate-[pulse_0.8s_infinite_alternate]" style={{ height: '100%', animationDelay: '0.1s' }} />
+                    <div className="w-[3px] bg-red-700 animate-[pulse_0.8s_infinite_alternate]" style={{ height: '70%', animationDelay: '0.3s' }} />
+                    <div className="w-[3px] bg-red-500 animate-[pulse_0.8s_infinite_alternate]" style={{ height: '90%', animationDelay: '0.5s' }} />
                   </div>
                 )}
               </div>
             ))}
           </div>
 
+          {/* PHYSICAL TAPE DECK CONTROLLER DISPLAY */}
+          {activeTrack && (
+            <div className="border border-red-950 bg-black p-3 font-mono text-xs flex flex-col gap-2 relative overflow-hidden">
+              {/* Grid dot matrix background */}
+              <div className="absolute inset-0 opacity-5 pointer-events-none" style={{
+                backgroundImage: 'radial-gradient(#ff003c 1px, transparent 1px)',
+                backgroundSize: '6px 6px'
+              }} />
+              
+              <div className="flex justify-between items-center text-[9px] text-red-500 border-b border-red-950/60 pb-1 z-10">
+                <span>CONSOLE MODULE // TAPE-909</span>
+                <span className={isPlaying ? 'animate-pulse text-red-500' : 'text-slate-600'}>
+                  {isPlaying ? '● SIGNAL ACTIVE' : '■ STANDBY'}
+                </span>
+              </div>
+              
+              <div className="flex items-center justify-between gap-4 z-10">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className={`w-8 h-8 flex-shrink-0 bg-red-950/40 border border-red-900/40 flex items-center justify-center ${isPlaying ? 'animate-spin' : ''}`} style={{ animationDuration: '6s' }}>
+                    <Disc size={15} className="text-red-500" />
+                  </div>
+                  <div className="truncate">
+                    <div className="text-[10px] text-white font-bold uppercase truncate">{activeTrack.name}</div>
+                    <div className="text-[8px] text-slate-500 truncate">{activeTrack.artists.map(a => a.name).join(', ').toUpperCase()}</div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-1.5">
+                  <button 
+                    onClick={() => handleTrackClick(activeTrack)} 
+                    className="w-7 h-7 border border-red-900 bg-black hover:bg-red-950/40 text-red-500 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+                    title={isPlaying ? "PAUSE PREVIEW" : "PLAY PREVIEW"}
+                  >
+                    {isPlaying ? <Pause size={11} className="fill-current" /> : <Play size={11} className="fill-current" />}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* INTEGRATED SPOTIFY EMBED IFRAME PLAYER */}
           {activeTrack && (
             <div className="flex flex-col gap-2 mt-2">
-              <span className="text-[10px] text-slate-400 font-mono tracking-wider">
-                SPOTIFY PLAYER
+              <span className="text-[9px] text-slate-500 font-mono tracking-wider">
+                SPOTIFY PLAYER EXTENSION //
               </span>
               <div className="spotify-embed-container">
                 <iframe
@@ -243,7 +293,7 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
                 className="btn btn-primary flex-grow"
               >
                 <Save size={16} />
-                Save to Spotify
+                SAVE TO SPOTIFY
               </button>
             ) : (
               <button
@@ -251,7 +301,7 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
                 className="btn btn-secondary btn-spotify flex-grow"
               >
                 <Save size={16} />
-                Connect Spotify to Save
+                CONNECT SPOTIFY TO SAVE
               </button>
             )}
 
@@ -261,7 +311,7 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
               title="Share Vibe with Community"
             >
               <Share2 size={16} />
-              Publish Vibe
+              PUBLISH VIBE
             </button>
           </div>
         </>

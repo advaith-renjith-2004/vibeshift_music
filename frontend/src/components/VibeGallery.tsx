@@ -10,11 +10,11 @@ interface VibeGalleryProps {
 
 const getWeatherIcon = (w: WeatherState) => {
   switch (w) {
-    case 'thunderstorm': return <CloudLightning size={12} className="text-slate-400" />;
-    case 'rain': return <CloudRain size={12} className="text-blue-400" />;
-    case 'cloudy': return <Cloud size={12} className="text-slate-400" />;
-    case 'clear': return <Sun size={12} className="text-yellow-400" />;
-    case 'radiant': return <Compass size={12} className="text-orange-400" />;
+    case 'thunderstorm': return <CloudLightning size={12} className="text-red-500" />;
+    case 'rain': return <CloudRain size={12} className="text-slate-500" />;
+    case 'cloudy': return <Cloud size={12} className="text-slate-500" />;
+    case 'clear': return <Sun size={12} className="text-slate-500" />;
+    case 'radiant': return <Compass size={12} className="text-red-500" />;
   }
 };
 
@@ -37,40 +37,35 @@ export const VibeGallery: React.FC<VibeGalleryProps> = ({ items, onLoadVibe, onR
   const formatDate = (dateString: string) => {
     try {
       const date = new Date(dateString);
-      return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+      return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }).toUpperCase();
     } catch {
-      return dateString;
+      return dateString.toUpperCase();
     }
   };
 
   return (
     <div className="gallery-section">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mb-4">
         <h3 className="vibe-grid-title">
-          <Share2 size={18} className="text-purple-400" />
-          Community Vibe Gallery
+          <Share2 size={18} className="text-red-500" />
+          COMMUNITY REGISTRY
         </h3>
         <button
           onClick={onRefresh}
-          className="text-xs text-indigo-400 hover:text-indigo-300 font-mono bg-indigo-500/10 border border-indigo-500/20 px-3 py-1.5 rounded-lg cursor-pointer transition-all"
+          className="text-xs text-red-500 hover:text-white font-mono bg-red-950/20 border border-red-900/40 px-3 py-1.5 cursor-pointer transition-all uppercase"
         >
-          Refresh Gallery
+          REFRESH REGISTRY
         </button>
       </div>
 
       {items.length === 0 ? (
-        <div className="glass-panel text-center py-10">
-          <p className="text-slate-400 text-sm">No shared vibes found. Be the first to publish one!</p>
+        <div className="text-center py-10 font-mono text-slate-500 text-xs">
+          NO SHARED VIBES DETECTED IN THE REGISTRY.
         </div>
       ) : (
         <div className="gallery-grid">
           {items.map(item => {
-            // Determine card highlight color based on color temperature slider
-            const cardColor = item.colorTemp < 0.3 
-              ? '#3b82f6' // Cool blue
-              : item.colorTemp > 0.7 
-                ? '#ef4444' // Warm red
-                : '#8b5cf6'; // Neutral purple
+            const cardColor = 'var(--accent-red)';
 
             return (
               <div
@@ -81,41 +76,41 @@ export const VibeGallery: React.FC<VibeGalleryProps> = ({ items, onLoadVibe, onR
               >
                 <div className="gallery-card-header">
                   <div className="flex flex-col min-w-0">
-                    <span className="gallery-card-title">{item.name}</span>
-                    <span className="gallery-card-user flex items-center gap-1 mt-1">
-                      <User size={10} />
+                    <span className="gallery-card-title">{item.name.toUpperCase()}</span>
+                    <span className="gallery-card-user flex items-center gap-1 mt-1 uppercase">
+                      <User size={10} className="text-slate-500" />
                       {item.userName}
                     </span>
                   </div>
                   <span className="gallery-card-vibe-pill flex items-center gap-1">
                     {getWeatherIcon(item.weather)}
-                    {getLanguageLabel(item.language)}
+                    {getLanguageLabel(item.language).toUpperCase()}
                   </span>
                 </div>
 
-                <div className="gallery-mini-metrics my-1">
+                <div className="gallery-mini-metrics my-1 font-mono">
                   <div className="mini-metric">
-                    <Flame size={12} className="text-orange-400" />
-                    <span className="text-[10px] text-slate-300">E: {(item.energy * 100).toFixed(0)}%</span>
+                    <Flame size={12} className="text-red-500" />
+                    <span className="text-[10px] text-slate-400">ENG: {(item.energy * 100).toFixed(0)}%</span>
                   </div>
                   <div className="mini-metric">
-                    <Activity size={12} className="text-pink-400" />
-                    <span className="text-[10px] text-slate-300">V: {(item.valence * 100).toFixed(0)}%</span>
+                    <Activity size={12} className="text-red-500" />
+                    <span className="text-[10px] text-slate-400">VAL: {(item.valence * 100).toFixed(0)}%</span>
                   </div>
                   <div className="mini-metric">
-                    <span className="text-[9px] font-mono text-slate-400">
+                    <span className="text-[9px] text-red-500/70">
                       {Math.round(70 + item.colorTemp * 85)} BPM
                     </span>
                   </div>
                 </div>
 
-                <div className="gallery-card-footer">
+                <div className="gallery-card-footer font-mono">
                   <span className="flex items-center gap-1 text-[10px]">
-                    <Calendar size={10} />
+                    <Calendar size={10} className="text-slate-600" />
                     {formatDate(item.createdAt)}
                   </span>
-                  <span className="text-[10px] text-indigo-400 font-mono">
-                    {item.tracks?.length || 0} tracks
+                  <span className="text-[10px] text-red-500">
+                    {item.tracks?.length || 0} TRACKS
                   </span>
                 </div>
               </div>
