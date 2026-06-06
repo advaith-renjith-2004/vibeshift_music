@@ -2,10 +2,40 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔮</text></svg>" />
+
+    <!-- PWA / Manifest -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#ff003c" />
+
+    <!-- iOS PWA support -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="VibeShift" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+
+    <!-- Standard meta -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Synesthetic Music Discovery Platform - Generate custom Spotify playlists using visual and atmospheric inputs." />
-    <title>VibeShift - Synesthetic Music Discovery Platform</title>
+    <meta name="description" content="VibeShift — Synesthetic Music Discovery Platform. Set your mood, energy and language. Get real-time YouTube music recommendations that match your vibe." />
+    <meta name="keywords" content="music discovery, mood music, youtube music, vibeshift, synesthetic, playlist generator" />
+    <meta name="author" content="Advaith" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="VibeShift — Synesthetic Music Discovery" />
+    <meta property="og:description" content="Set your vibe, get real-time music. Language-specific, mood-matched, powered by YouTube." />
+    <meta property="og:image" content="/icon-512.png" />
+    <meta property="og:type" content="website" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="VibeShift — Synesthetic Music Discovery" />
+    <meta name="twitter:description" content="Set your vibe, get real-time music. Language-specific, mood-matched, powered by YouTube." />
+    <meta name="twitter:image" content="/icon-512.png" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
+
+    <title>VibeShift — Synesthetic Music Discovery Platform</title>
   </head>
   <body>
     <div id="root"></div>

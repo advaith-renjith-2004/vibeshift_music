@@ -119,7 +119,8 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
 
     if (!track.preview_url) {
       // No preview URL, but we still mark it active for the Iframe Embed
-      setIsPlaying(false);
+      // This allows the YouTube player to autoplay and the UI to show "playing" state
+      setIsPlaying(true);
       return;
     }
 
@@ -140,8 +141,8 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
   const pausePreview = () => {
     if (audioRef.current) {
       audioRef.current.pause();
-      setIsPlaying(false);
     }
+    setIsPlaying(false);
   };
 
   const stopPreview = () => {
@@ -383,7 +384,7 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
               <div className="spotify-embed-container">
                 {youtubeVideoId ? (
                   <iframe
-                    src={`https://www.youtube.com/embed/${youtubeVideoId}`}
+                    src={`https://www.youtube.com/embed/${youtubeVideoId}${(!activeTrack.preview_url && isPlaying) ? '?autoplay=1' : '?autoplay=0'}`}
                     className="spotify-embed-iframe"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen

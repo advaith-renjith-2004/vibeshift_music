@@ -1346,3 +1346,145 @@ header.sticky-header {
   text-transform: uppercase;
   text-align: center;
 }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   PWA BANNERS
+───────────────────────────────────────────────────────────────────────────── */
+
+/* Install prompt — slides up from bottom-left */
+.pwa-install-banner {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: rgba(10, 10, 15, 0.97);
+  border: 1px solid var(--accent-red);
+  box-shadow: 0 0 24px rgba(255, 0, 60, 0.3), 0 4px 40px rgba(0,0,0,0.6);
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  max-width: 380px;
+  animation: pwa-slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  backdrop-filter: blur(12px);
+}
+
+@keyframes pwa-slide-up {
+  from { transform: translateY(120%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+.pwa-install-icon {
+  color: var(--accent-red);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.pwa-install-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.pwa-install-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.pwa-install-sub {
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.pwa-install-btn {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 7px 14px;
+  background: var(--accent-red);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+
+.pwa-install-btn:hover {
+  background: #cc0030;
+  box-shadow: 0 0 12px rgba(255, 0, 60, 0.5);
+}
+
+.pwa-dismiss-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 4px;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: color 0.15s;
+}
+
+.pwa-dismiss-btn:hover {
+  color: #fff;
+}
+
+/* Update banner — fixed top center */
+.pwa-update-banner {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 18px;
+  background: rgba(10, 10, 15, 0.97);
+  border: 1px solid #ff5500;
+  box-shadow: 0 0 20px rgba(255, 85, 0, 0.35);
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #ff5500;
+  text-transform: uppercase;
+  animation: pwa-drop-in 0.3s ease forwards;
+  white-space: nowrap;
+  backdrop-filter: blur(12px);
+}
+
+@keyframes pwa-drop-in {
+  from { transform: translate(-50%, -140%); opacity: 0; }
+  to   { transform: translate(-50%, 0);     opacity: 1; }
+}
+
+.pwa-update-btn {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  background: #ff5500;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.pwa-update-btn:hover {
+  background: #cc4400;
+}

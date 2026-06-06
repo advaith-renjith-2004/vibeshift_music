@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import axios from 'axios';
 import confetti from 'canvas-confetti';
 import { Disc } from 'lucide-react';
+import { useRegisterSW } from 'virtual:pwa-register/react';
 
 import type { VibeState, Track, GalleryItem } from './types';
 import { Visualizer } from './components/Visualizer';
@@ -12,6 +13,7 @@ import { VibeProfile } from './components/VibeProfile';
 import { PlaylistView } from './components/PlaylistView';
 import { VibeGallery } from './components/VibeGallery';
 import { GeometricVisualizer } from './components/GeometricVisualizer';
+import { PWAInstallPrompt } from './components/PWAInstallPrompt';
 
 import { filterLocalMock } from './utils/localMock';
 import { publishVibe, getGalleryItems } from './utils/firebase';
@@ -19,6 +21,14 @@ import { publishVibe, getGalleryItems } from './utils/firebase';
 const BACKEND_URL = 'http://localhost:3001';
 
 export default function App() {
+  // PWA: Service Worker update hook
+  const { needRefresh, updateServiceWorker } = useRegisterSW();
+  const [showUpdateBanner, setShowUpdateBanner] = useState(false);
+
+  useEffect(() => {
+    if (needRefresh[0]) setShowUpdateBanner(true);
+  }, [needRefresh]);
+
   // 1. Core State
   const [vibe, setVibe] = useState<VibeState>({
     energy: 0.5,
@@ -511,6 +521,23 @@ export default function App() {
           <div className="footer-sub">SYNESTHETIC MUSIC DISCOVERY PLATFORM — POWERED BY YOUTUBE</div>
         </footer>
       </div>
+
+      {/* PWA: Install prompt banner */}
+      <PWAInstallPrompt />
+
+      {/* PWA: Update available banner */}
+      {showUpdateBanner && (
+        <div className="pwa-update-banner">
+          <span>⚡ UPDATE AVAILABLE</span>
+          <button
+            className="pwa-update-btn"
+            onClick={() => { updateServiceWorker(true); setShowUpdateBanner(false); }}
+          >
+            RELOAD
+          </button>
+          <button className="pwa-dismiss-btn" onClick={() => setShowUpdateBanner(false)}>✕</button>
+        </div>
+      )}
     </>
   );
 }
