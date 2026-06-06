@@ -85,12 +85,30 @@ export const GeometricVisualizer: React.FC<GeometricVisualizerProps> = ({ vibe }
       const width = canvas.width;
       const height = canvas.height;
 
+      // Get computed theme accent color from document root
+      const computedColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim() || '#ff003c';
+      
+      // Hex to RGBA converter helper
+      const getRGBA = (alpha: number) => {
+        let hex = computedColor;
+        if (hex.startsWith('#')) {
+          hex = hex.slice(1);
+        }
+        if (hex.length === 3) {
+          hex = hex.split('').map(x => x + x).join('');
+        }
+        const r = parseInt(hex.slice(0, 2), 16) || 255;
+        const g = parseInt(hex.slice(2, 4), 16) || 0;
+        const b = parseInt(hex.slice(4, 6), 16) || 60;
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+      };
+
       // Clear with slight trailing opacity for motion blur
       ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
       ctx.fillRect(0, 0, width, height);
 
       // Draw Grid Matrix Background
-      ctx.strokeStyle = 'rgba(255, 0, 60, 0.02)';
+      ctx.strokeStyle = getRGBA(0.025);
       ctx.lineWidth = 1;
       const spacing = 16;
       for (let x = 0; x < width; x += spacing) {
@@ -108,7 +126,7 @@ export const GeometricVisualizer: React.FC<GeometricVisualizerProps> = ({ vibe }
 
       // Draw ripple if active
       if (ripple) {
-        ctx.strokeStyle = `rgba(255, 0, 60, ${ripple.alpha})`;
+        ctx.strokeStyle = getRGBA(ripple.alpha);
         ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.arc(ripple.x, ripple.y, ripple.r, 0, Math.PI * 2);
@@ -165,7 +183,7 @@ export const GeometricVisualizer: React.FC<GeometricVisualizerProps> = ({ vibe }
         const pulse = 1 + Math.sin(phase) * 0.25;
         const radius = (baseRadius + i * 20) * pulse;
         
-        ctx.strokeStyle = `rgba(255, 0, 60, ${Math.max(0.1, 0.7 - i * 0.12)})`;
+        ctx.strokeStyle = getRGBA(Math.max(0.1, 0.7 - i * 0.12));
         ctx.lineWidth = i === 0 ? 2 : 1;
         ctx.beginPath();
 
@@ -188,7 +206,7 @@ export const GeometricVisualizer: React.FC<GeometricVisualizerProps> = ({ vibe }
       }
 
       // Draw crosshairs for geometric focus
-      ctx.strokeStyle = 'rgba(255, 0, 60, 0.25)';
+      ctx.strokeStyle = getRGBA(0.25);
       ctx.lineWidth = 1;
       ctx.beginPath();
       // Horizontal crosshair lines
@@ -204,7 +222,6 @@ export const GeometricVisualizer: React.FC<GeometricVisualizerProps> = ({ vibe }
       ctx.stroke();
 
       // Update and Draw floating musical notes
-      ctx.fillStyle = 'var(--accent-red)';
       notesRef.current.forEach((note, index) => {
         note.x += note.vx;
         note.y += note.vy;
@@ -220,13 +237,13 @@ export const GeometricVisualizer: React.FC<GeometricVisualizerProps> = ({ vibe }
         ctx.translate(note.x, note.y);
         ctx.rotate(note.rotation);
         ctx.font = `${note.size}px "Share Tech Mono", monospace`;
-        ctx.fillStyle = `rgba(255, 0, 60, ${note.alpha})`;
+        ctx.fillStyle = getRGBA(note.alpha);
         ctx.fillText(note.text, -note.size / 2, note.size / 2);
         ctx.restore();
       });
 
       // Monospace readouts overlay inside visualizer box
-      ctx.fillStyle = 'rgba(255, 0, 60, 0.8)';
+      ctx.fillStyle = getRGBA(0.85);
       ctx.font = '10px "Share Tech Mono", monospace';
       ctx.textAlign = 'left';
       ctx.fillText(`FREQ: ${(50 + vibe.energy * 200).toFixed(1)}HZ`, 15, 20);

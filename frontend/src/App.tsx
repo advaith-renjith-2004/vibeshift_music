@@ -49,6 +49,25 @@ export default function App() {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [showProfileModal, setShowProfileModal] = useState(false);
 
+  // Apply Theme
+  useEffect(() => {
+    if (user?.theme === 'custom' && user.customColor) {
+      document.documentElement.setAttribute('data-theme', 'custom');
+      document.documentElement.style.setProperty('--accent-color', user.customColor);
+      // Generate dim and glow versions for the custom color
+      document.documentElement.style.setProperty('--accent-dim', `${user.customColor}26`); // ~15% opacity
+      document.documentElement.style.setProperty('--accent-glow', `${user.customColor}66`); // ~40% opacity
+    } else if (user?.theme) {
+      document.documentElement.setAttribute('data-theme', user.theme);
+      // Clear custom properties if not in custom mode
+      document.documentElement.style.removeProperty('--accent-color');
+      document.documentElement.style.removeProperty('--accent-dim');
+      document.documentElement.style.removeProperty('--accent-glow');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'rose');
+    }
+  }, [user?.theme, user?.customColor]);
+
   // Initialize/Load User Profile
   useEffect(() => {
     const initUser = async () => {
@@ -67,7 +86,8 @@ export default function App() {
         const defaultProfile: UserProfile = {
           uid,
           name: 'Vibe Explorer',
-          email: 'explorer@vibeshift.io'
+          email: 'explorer@vibeshift.io',
+          theme: 'rose'
         };
         setUser(defaultProfile);
         await saveUserProfile(defaultProfile);
@@ -77,10 +97,9 @@ export default function App() {
   }, []);
 
   const handleUpdateProfile = async (updatedProfile: UserProfile) => {
+    // Optimistically update local state for instant theme feedback
+    setUser(updatedProfile);
     const success = await saveUserProfile(updatedProfile);
-    if (success) {
-      setUser(updatedProfile);
-    }
     return success;
   };
 
@@ -259,12 +278,12 @@ export default function App() {
 
   const getDiscStyle = () => {
     if (scrollDirection === 'down') {
-      return { animation: 'spin 0.8s linear infinite', color: 'var(--accent-red)' };
+      return { animation: 'spin 0.8s linear infinite', color: 'var(--accent-color)' };
     }
     if (scrollDirection === 'up') {
       return { animation: 'spin-reverse 0.8s linear infinite', color: '#00f6ff' };
     }
-    return { animation: 'spin 4s linear infinite', color: 'var(--accent-red)' };
+    return { animation: 'spin 4s linear infinite', color: 'var(--accent-color)' };
   };
 
   const debounceTimeoutRef = useRef<number | null>(null);
@@ -484,8 +503,12 @@ export default function App() {
               onClick={() => setShowProfileModal(true)}
               className="glass-panel py-2 px-3 flex items-center gap-2 hover:bg-red-500/10 transition-colors group"
             >
-              <div className="w-5 h-5 bg-red-950/40 flex items-center justify-center rounded-sm">
-                <User size={14} className="text-red-500" />
+              <div className="w-5 h-5 bg-red-950/40 flex items-center justify-center rounded-sm overflow-hidden">
+                {user?.avatarUrl ? (
+                  <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
+                ) : (
+                  <User size={14} className="text-red-500" />
+                )}
               </div>
               <span className="font-mono text-[10px] text-slate-300 group-hover:text-white">
                 {user ? user.name.toUpperCase() : 'PROFILE'}
@@ -498,7 +521,7 @@ export default function App() {
                 width="16" 
                 height="16" 
                 fill="currentColor"
-                style={{ color: 'var(--accent-red)' }}
+                style={{ color: 'var(--accent-color)' }}
               >
                 <path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.11C19.517 3.545 12 3.545 12 3.545s-7.517 0-9.388.508a3.003 3.003 0 0 0-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 0 0 2.11 2.11c1.871.508 9.388.508 9.388.508s7.517 0 9.388-.508a3.003 3.003 0 0 0 2.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
               </svg>

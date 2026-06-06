@@ -74,14 +74,14 @@ export const VibeProfile: React.FC<VibeProfileProps> = ({ vibe }) => {
       value: `${(energyVal * 100).toFixed(0)}%`,
       percentage: energyVal * 100,
       icon: <Flame size={14} className="text-red-500" />,
-      color: 'var(--accent-red)'
+      color: 'var(--accent-color)'
     },
     {
       name: 'TARGET VALENCE',
       value: `${(valenceVal * 100).toFixed(0)}%`,
       percentage: valenceVal * 100,
       icon: <Activity size={14} className="text-red-500" />,
-      color: 'var(--accent-red)'
+      color: 'var(--accent-color)'
     },
     {
       name: 'TEMPO (BPM)',
@@ -89,28 +89,28 @@ export const VibeProfile: React.FC<VibeProfileProps> = ({ vibe }) => {
       // Map BPM from 50 to 180 range to percentage
       percentage: Math.max(0, Math.min(100, ((finalBpm - 50) / 130) * 100)),
       icon: <SlidersIcon size={14} className="text-red-500" />,
-      color: 'var(--accent-red)'
+      color: 'var(--accent-color)'
     },
     {
       name: 'ACOUSTICNESS',
       value: `${(acousticVal * 100).toFixed(0)}%`,
       percentage: acousticVal * 100,
       icon: <Music size={14} className="text-red-500" />,
-      color: 'var(--accent-red)'
+      color: 'var(--accent-color)'
     },
     {
       name: 'DANCEABILITY',
       value: `${(finalDanceability * 100).toFixed(0)}%`,
       percentage: finalDanceability * 100,
       icon: <Flame size={14} className="text-red-500" />,
-      color: 'var(--accent-red)'
+      color: 'var(--accent-color)'
     },
     {
       name: 'INSTRUMENTALNESS',
       value: `${(instrumentalVal * 100).toFixed(0)}%`,
       percentage: instrumentalVal * 100,
       icon: <HelpCircle size={14} className="text-red-500" />,
-      color: 'var(--accent-red)'
+      color: 'var(--accent-color)'
     }
   ];
 

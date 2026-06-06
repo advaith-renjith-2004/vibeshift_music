@@ -65,7 +65,7 @@ export const VibeGallery: React.FC<VibeGalleryProps> = ({ items, onLoadVibe, onR
       ) : (
         <div className="gallery-grid">
           {items.map(item => {
-            const cardColor = 'var(--accent-red)';
+            const cardColor = 'var(--accent-color)';
 
             return (
               <div

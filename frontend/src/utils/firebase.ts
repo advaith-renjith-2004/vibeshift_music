@@ -1,5 +1,5 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getFirestore, collection, addDoc, getDocs, orderBy, query, limit, doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, getDocs, orderBy, query, limit, doc, setDoc, getDoc } from 'firebase/firestore';
 import type { GalleryItem, UserProfile, PlayHistoryItem, Track, VibeState } from '../types';
 
 // Web app's Firebase configuration

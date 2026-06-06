@@ -22,12 +22,16 @@ export interface VibeState {
   language: LanguageCode;
 }
 
+export type ThemeType = 'rose' | 'cyan' | 'emerald' | 'purple' | 'parchment' | 'custom';
+
 export interface UserProfile {
   uid: string;
   name: string;
   email: string;
   bio?: string;
   avatarUrl?: string;
+  theme?: ThemeType;
+  customColor?: string;
 }
 
 export interface PlayHistoryItem {

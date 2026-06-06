@@ -36,6 +36,28 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
   const [published, setPublished] = useState(false);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+
+  // Synchronize playing state with YouTube iframe via postMessage
+  useEffect(() => {
+    if (youtubeVideoId && iframeRef.current && iframeRef.current.contentWindow) {
+      try {
+        if (isPlaying) {
+          iframeRef.current.contentWindow.postMessage(
+            JSON.stringify({ event: 'command', func: 'playVideo', args: '' }),
+            '*'
+          );
+        } else {
+          iframeRef.current.contentWindow.postMessage(
+            JSON.stringify({ event: 'command', func: 'pauseVideo', args: '' }),
+            '*'
+          );
+        }
+      } catch (err) {
+        console.warn("Failed to post message to YouTube iframe:", err);
+      }
+    }
+  }, [isPlaying, youtubeVideoId]);
 
   // Auto-play/load first track and reset YouTube resolver
   useEffect(() => {
@@ -117,16 +139,15 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
     // Notify parent of the played track for history tracking
     if (onTrackPlay) onTrackPlay(track.id);
 
+    setIsPlaying(true);
+
     if (!track.preview_url) {
-      // No preview URL, but we still mark it active for the Iframe Embed
-      // This allows the YouTube player to autoplay and the UI to show "playing" state
-      setIsPlaying(true);
+      // YouTube live track - playback handled by iframe autoplay / postMessage
       return;
     }
 
     const audio = new Audio(track.preview_url);
     audioRef.current = audio;
-    setIsPlaying(true);
     
     audio.play().catch(err => {
       console.warn("Autoplay was blocked or audio failed:", err);
@@ -139,18 +160,18 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
   };
 
   const pausePreview = () => {
+    setIsPlaying(false);
     if (audioRef.current) {
       audioRef.current.pause();
     }
-    setIsPlaying(false);
   };
 
   const stopPreview = () => {
+    setIsPlaying(false);
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current = null;
     }
-    setIsPlaying(false);
   };
 
   const handleNextTrack = () => {
@@ -384,7 +405,8 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
               <div className="spotify-embed-container">
                 {youtubeVideoId ? (
                   <iframe
-                    src={`https://www.youtube.com/embed/${youtubeVideoId}${(!activeTrack.preview_url && isPlaying) ? '?autoplay=1' : '?autoplay=0'}`}
+                    ref={iframeRef}
+                    src={`https://www.youtube.com/embed/${youtubeVideoId}?enablejsapi=1${isPlaying ? '&autoplay=1' : ''}`}
                     className="spotify-embed-iframe"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
