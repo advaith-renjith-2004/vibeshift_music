@@ -311,6 +311,93 @@ const mockTracks = [
     tempo: 120,
     language: "sv",
     genre: "swedish"
+  },
+
+  // REGIONAL INDIAN MUSIC fallbacks
+  {
+    id: "4T6n66QG8W4xHwG7c85u3u",
+    name: "Darshana",
+    artists: [{ name: "Hesham Abdul Wahab" }],
+    album: {
+      name: "Hridayam",
+      images: [{ url: "https://i.scdn.co/image/ab67616d0000b27376cd7d2b6387063bd70d30c5" }]
+    },
+    preview_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
+    energy: 0.65,
+    valence: 0.72,
+    acousticness: 0.35,
+    instrumentalness: 0.01,
+    tempo: 120,
+    language: "ml",
+    genre: "indian"
+  },
+  {
+    id: "7Cbbq4e4Wv7918y4Jt2v3X",
+    name: "Kaavaalaa",
+    artists: [{ name: "Anirudh Ravichander, Shilpa Rao" }],
+    album: {
+      name: "Jailer",
+      images: [{ url: "https://i.scdn.co/image/ab67616d0000b273cd982da642598deef66b02a9" }]
+    },
+    preview_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3",
+    energy: 0.82,
+    valence: 0.88,
+    acousticness: 0.1,
+    instrumentalness: 0.0,
+    tempo: 125,
+    language: "ta",
+    genre: "tamil"
+  },
+  {
+    id: "0O6eS1Jv3b4X7M2w1k6yE",
+    name: "Naatu Naatu",
+    artists: [{ name: "M. M. Keeravani, Rahul Sipligunj" }],
+    album: {
+      name: "RRR",
+      images: [{ url: "https://i.scdn.co/image/ab67616d0000b27318ecf7db11545620b75cf798" }]
+    },
+    preview_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3",
+    energy: 0.9,
+    valence: 0.92,
+    acousticness: 0.05,
+    instrumentalness: 0.0,
+    tempo: 130,
+    language: "te",
+    genre: "telugu"
+  },
+  {
+    id: "1696b04sgol6uB9Vv0M6yE",
+    name: "Excuses",
+    artists: [{ name: "AP Dhillon, Gurinder Gill" }],
+    album: {
+      name: "Not by Chance",
+      images: [{ url: "https://i.scdn.co/image/ab67616d0000b273ab32c695bfdf47b8599446f7" }]
+    },
+    preview_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3",
+    energy: 0.75,
+    valence: 0.78,
+    acousticness: 0.08,
+    instrumentalness: 0.0,
+    tempo: 96,
+    language: "pa",
+    genre: "punjabi"
+  },
+  {
+    id: "7pbDxGE6vxVCI034goEvt5",
+    name: "Singara Siriye",
+    artists: [{ name: "Vijay Prakash, Ananya Bhat" }],
+    album: {
+      name: "Kantara",
+      images: [{ url: "https://i.scdn.co/image/ab67616d0000b273b4b84b8d7ef2049e6d87ef9c" }]
+    },
+    preview_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3",
+    energy: 0.78,
+    valence: 0.8,
+    acousticness: 0.15,
+    instrumentalness: 0.02,
+    tempo: 110,
+    language: "kn",
+    genre: "indian"
   }
 ];
 

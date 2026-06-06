@@ -57,7 +57,12 @@ const genreSeedsMap = {
   ko: "k-pop,korean-indie",
   hi: "indian,pop-filmi",
   pt: "bossanova,brazil,mpb",
-  sv: "swedish,synthpop,folk"
+  sv: "swedish,synthpop,folk",
+  ta: "tamil,indian",
+  te: "telugu,indian",
+  pa: "punjabi,indian",
+  ml: "indian",
+  kn: "indian"
 };
 
 // Map languages to popular atmospheric artist seeds to guarantee high-quality recommendations
@@ -70,7 +75,12 @@ const artistSeedsMap = {
   ko: ["3NPI73Jd2jU7wIb76fVnZ1", "0Y2vPk4gd6ev2H2WwDI760"], // BTS, IU
   hi: ["4YRxvE7qLIjUxONUC2NU4Z", "1wRPtKGflJr4rj2RzcxLAg"], // Arijit Singh, Prateek Kuhad
   pt: ["6qqNV070wspmg5cR7HI1Zg", "2S95n9n6j2n5n9n9n9n9n9"], // João Gilberto, Caetano Veloso
-  sv: ["0j2e0Gz4q7gA3z4c1t2v3X", "62tN8mJqgVvEwV1zL9v9X9"] // ABBA, Robyn
+  sv: ["0j2e0Gz4q7gA3z4c1t2v3X", "62tN8mJqgVvEwV1zL9v9X9"], // ABBA, Robyn
+  ta: ["4zCH9qm4R2DADamUHMCa6u", "1wRPtKGflJr4rj2RzcxLAg"], // Anirudh Ravichander, AR Rahman
+  te: ["776U448S26z96u033P8FfS", "1wRPtKGflJr4rj2RzcxLAg"], // Sid Sriram, AR Rahman
+  pa: ["2FKWBDPJZ2Lh1V4r8Q6v06", "4YRxvE7qLIjUxONUC2NU4Z"], // Diljit Dosanjh, Arijit Singh
+  ml: ["4Q29F6423u65V6J8TqR58T", "1wRPtKGflJr4rj2RzcxLAg"], // Sushin Shyam, AR Rahman
+  kn: ["1wRPtKGflJr4rj2RzcxLAg", "776U448S26z96u033P8FfS"] // AR Rahman, Sid Sriram
 };
 
 // Endpoint: Query recommendations
@@ -158,6 +168,11 @@ app.get("/api/recommendations", async (req, res) => {
         else if (lang === 'hi') genre = "genre:indian OR genre:hindi";
         else if (lang === 'pt') genre = "genre:bossanova OR genre:brazil";
         else if (lang === 'sv') genre = "genre:swedish OR genre:synthpop";
+        else if (lang === 'ta') genre = "genre:tamil";
+        else if (lang === 'te') genre = "genre:telugu";
+        else if (lang === 'pa') genre = "genre:punjabi";
+        else if (lang === 'ml') return "malayalam film OR malayalam pop OR sushin shyam";
+        else if (lang === 'kn') return "kannada film OR kannada pop OR vijay prakash";
         else {
           if (e < 0.4 && v < 0.4) genre = "indie-folk OR genre:lo-fi";
           else if (e < 0.4 && v >= 0.4) genre = "indie-pop OR genre:acoustic";

@@ -12,7 +12,7 @@ export interface Track {
 
 export type WeatherState = 'thunderstorm' | 'rain' | 'cloudy' | 'clear' | 'radiant';
 
-export type LanguageCode = 'silence' | 'en' | 'es' | 'fr' | 'ja' | 'ko' | 'hi' | 'pt' | 'sv';
+export type LanguageCode = 'silence' | 'en' | 'es' | 'fr' | 'ja' | 'ko' | 'hi' | 'pt' | 'sv' | 'ta' | 'te' | 'ml' | 'kn' | 'pa';
 
 export interface VibeState {
   energy: number;      // 0.0 to 1.0 (chill to energy)

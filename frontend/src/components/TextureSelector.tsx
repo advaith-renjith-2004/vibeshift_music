@@ -26,7 +26,7 @@ const textureOptions: VocalTextureOption[] = [
   {
     id: 'familiar',
     title: 'Familiar',
-    desc: 'Local / Native (English)',
+    desc: 'English / Regional Indian',
     icon: <HeartHandshake size={18} />,
     defaultLang: 'en'
   },
@@ -48,6 +48,15 @@ const textureOptions: VocalTextureOption[] = [
 
 // Sub-languages configuration
 const subLanguages = {
+  familiar: [
+    { code: 'en' as LanguageCode, label: 'English (US/UK)' },
+    { code: 'hi' as LanguageCode, label: 'Hindi (हिन्दी)' },
+    { code: 'pa' as LanguageCode, label: 'Punjabi (ਪੰਜਾਬੀ)' },
+    { code: 'ta' as LanguageCode, label: 'Tamil (தமிழ்)' },
+    { code: 'te' as LanguageCode, label: 'Telugu (తెలుగు)' },
+    { code: 'ml' as LanguageCode, label: 'Malayalam (മലയാളം)' },
+    { code: 'kn' as LanguageCode, label: 'Kannada (ಕന്നഡ)' }
+  ],
   flowing: [
     { code: 'es' as LanguageCode, label: 'Spanish (Español)' },
     { code: 'fr' as LanguageCode, label: 'French (Français)' },
@@ -56,7 +65,6 @@ const subLanguages = {
   wanderlust: [
     { code: 'ja' as LanguageCode, label: 'Japanese (日本語)' },
     { code: 'ko' as LanguageCode, label: 'Korean (한국어)' },
-    { code: 'hi' as LanguageCode, label: 'Hindi (हिन्दी)' },
     { code: 'sv' as LanguageCode, label: 'Swedish (Svenska)' }
   ]
 };
@@ -68,7 +76,7 @@ export const TextureSelector: React.FC<TextureSelectorProps> = ({
   // Determine which primary texture is active based on the selectedLanguage
   const getActiveTextureId = (): 'silence' | 'familiar' | 'flowing' | 'wanderlust' => {
     if (selectedLanguage === 'silence') return 'silence';
-    if (selectedLanguage === 'en') return 'familiar';
+    if (['en', 'hi', 'pa', 'ta', 'te', 'ml', 'kn'].includes(selectedLanguage)) return 'familiar';
     if (['es', 'fr', 'pt'].includes(selectedLanguage)) return 'flowing';
     return 'wanderlust';
   };
@@ -103,6 +111,26 @@ export const TextureSelector: React.FC<TextureSelectorProps> = ({
           </div>
         ))}
       </div>
+
+      {/* Render sub-languages for 'Familiar' (English/Indian) */}
+      {activeTextureId === 'familiar' && (
+        <div className="language-subselector">
+          <span className="text-[11px] text-slate-400 font-mono font-bold uppercase tracking-wider">
+            Select Language/Dialect:
+          </span>
+          <div className="language-list">
+            {subLanguages.familiar.map(lang => (
+              <button
+                key={lang.code}
+                onClick={() => onChange(lang.code)}
+                className={`language-btn ${selectedLanguage === lang.code ? 'active' : ''}`}
+              >
+                {lang.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Render sub-languages for 'Flowing' (Romance) */}
       {activeTextureId === 'flowing' && (
