@@ -505,7 +505,7 @@ export default function App() {
             >
               <User size={14} style={{ color: 'var(--accent-color)' }} />
               <span className="font-mono text-[10px] text-slate-300 group-hover:text-white">
-                {user ? user.name.toUpperCase() : 'PROFILE'}
+                PROFILE
               </span>
             </button>
 
