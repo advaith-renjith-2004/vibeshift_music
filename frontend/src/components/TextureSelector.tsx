@@ -55,7 +55,7 @@ const subLanguages = {
     { code: 'ta' as LanguageCode, label: 'Tamil (தமிழ்)' },
     { code: 'te' as LanguageCode, label: 'Telugu (తెలుగు)' },
     { code: 'ml' as LanguageCode, label: 'Malayalam (മലയാളം)' },
-    { code: 'kn' as LanguageCode, label: 'Kannada (ಕന്നഡ)' }
+    { code: 'kn' as LanguageCode, label: 'Kannada (ಕನ್ನಡ)' }
   ],
   flowing: [
     { code: 'es' as LanguageCode, label: 'Spanish (Español)' },
