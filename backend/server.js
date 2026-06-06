@@ -142,7 +142,66 @@ app.get("/api/recommendations", async (req, res) => {
       }))
     });
   } catch (error) {
-    console.error("Spotify API error, falling back to simulated database:", error.message);
+    console.error("Spotify Recommendations endpoint restricted or failed. Attempting Search fallback...", error.message);
+    
+    try {
+      const token = await getClientCredentialsToken();
+      // Helper function to get search query based on vibe
+      const getSearchQuery = (lang, e, v) => {
+        let genre = "pop";
+        if (lang === 'silence') return "genre:ambient OR genre:classical OR genre:piano";
+        
+        if (lang === 'ja') genre = "j-pop OR genre:j-rock";
+        else if (lang === 'ko') genre = "k-pop OR genre:korean-indie";
+        else if (lang === 'es') genre = "genre:latin OR genre:spanish";
+        else if (lang === 'fr') genre = "genre:french OR genre:electropop";
+        else if (lang === 'hi') genre = "genre:indian OR genre:hindi";
+        else if (lang === 'pt') genre = "genre:bossanova OR genre:brazil";
+        else if (lang === 'sv') genre = "genre:swedish OR genre:synthpop";
+        else {
+          if (e < 0.4 && v < 0.4) genre = "indie-folk OR genre:lo-fi";
+          else if (e < 0.4 && v >= 0.4) genre = "indie-pop OR genre:acoustic";
+          else if (e >= 0.4 && v < 0.4) genre = "rock OR genre:grunge";
+          else genre = "pop OR genre:dance OR genre:edm";
+        }
+        return `genre:${genre}`;
+      };
+
+      const searchQuery = getSearchQuery(language, targetEnergy, targetValence);
+      console.log(`[Spotify Search Fallback] Querying: "${searchQuery}"`);
+
+      const searchResponse = await axios.get("https://api.spotify.com/v1/search", {
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        params: {
+          q: searchQuery,
+          type: "track",
+          limit: 15
+        }
+      });
+
+      const searchTracks = searchResponse.data.tracks.items.map(track => ({
+        id: track.id,
+        name: track.name,
+        artists: track.artists.map(a => ({ name: a.name })),
+        album: {
+          name: track.album.name,
+          images: track.album.images
+        },
+        preview_url: track.preview_url,
+        uri: track.uri
+      }));
+
+      if (searchTracks.length > 0) {
+        return res.json({
+          source: "spotify_api",
+          tracks: searchTracks
+        });
+      }
+    } catch (searchError) {
+      console.error("Spotify Search fallback failed as well, using simulated database:", searchError.message);
+    }
     
     // FALLBACK: Filter and sort mock tracks based on Euclidean distance
     const scoredTracks = mockTracks.map(track => {
@@ -151,7 +210,6 @@ app.get("/api/recommendations", async (req, res) => {
       
       // Match language if it is specific
       if (language !== "en" && track.language !== language) {
-        // Add a penalty if languages don't match, but allow mixed if we don't have enough tracks
         score += 2.0;
       }
       if (language === "silence" && track.language !== "silence") {

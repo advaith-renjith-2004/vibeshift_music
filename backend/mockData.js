@@ -1,7 +1,7 @@
 const mockTracks = [
   // CHILL / MELANCHOLIC (Low Energy, Low Valence)
   {
-    id: "1",
+    id: "4MXUO7v0VjML1szEU615v3",
     name: "Rosyln",
     artists: [{ name: "Bon Iver & St. Vincent" }],
     album: {
@@ -18,7 +18,7 @@ const mockTracks = [
     genre: "indie"
   },
   {
-    id: "2",
+    id: "527kCunrRSx6YBv7q7U45Q",
     name: "Gymnopédie No.1",
     artists: [{ name: "Erik Satie" }],
     album: {
@@ -35,7 +35,7 @@ const mockTracks = [
     genre: "classical"
   },
   {
-    id: "3",
+    id: "2usrT3w4650oytZ557t4ea",
     name: "Intro",
     artists: [{ name: "The xx" }],
     album: {
@@ -52,7 +52,7 @@ const mockTracks = [
     genre: "ambient"
   },
   {
-    id: "4",
+    id: "5SclYw5rUqE75S1W84033C",
     name: "Youth",
     artists: [{ name: "Daughter" }],
     album: {
@@ -69,7 +69,7 @@ const mockTracks = [
     genre: "indie"
   },
   {
-    id: "5",
+    id: "0v9WpeNjutD52CY1jJgQvO",
     name: "Amoeba",
     artists: [{ name: "Clairo" }],
     album: {
@@ -88,7 +88,7 @@ const mockTracks = [
 
   // CHILL / EUPHORIC (Low Energy, High Valence)
   {
-    id: "6",
+    id: "3r16b04sgol6uB9Vv0M6yE",
     name: "Bossa No Décor",
     artists: [{ name: "João Gilberto" }],
     album: {
@@ -105,7 +105,7 @@ const mockTracks = [
     genre: "bossanova"
   },
   {
-    id: "7",
+    id: "3Uqu1mEdkUvOIU6nvnUZly",
     name: "Weightless",
     artists: [{ name: "Marconi Union" }],
     album: {
@@ -122,7 +122,7 @@ const mockTracks = [
     genre: "ambient"
   },
   {
-    id: "8",
+    id: "18ecf7db11545620b75cf798",
     name: "La Vie En Rose",
     artists: [{ name: "Édith Piaf" }],
     album: {
@@ -139,9 +139,9 @@ const mockTracks = [
     genre: "french"
   },
   {
-    id: "9",
-    name: "Prateek Kuhad",
-    artists: [{ name: "cold/mess" }],
+    id: "1wRPtKGflJr4rj2RzcxLAg",
+    name: "cold/mess",
+    artists: [{ name: "Prateek Kuhad" }],
     album: {
       name: "cold/mess EP",
       images: [{ url: "https://i.scdn.co/image/ab67616d0000b27376cd7d2b6387063bd70d30c5" }]
@@ -156,7 +156,7 @@ const mockTracks = [
     genre: "indian"
   },
   {
-    id: "10",
+    id: "71G1Vcxk2TClI6Vmq3505X",
     name: "Plastic Love",
     artists: [{ name: "Mariya Takeuchi" }],
     album: {
@@ -175,7 +175,7 @@ const mockTracks = [
 
   // HIGH ENERGY / MELANCHOLIC (High Energy, Low Valence)
   {
-    id: "11",
+    id: "7a5oOr1321Xv0eQvEovg7K",
     name: "Starboy",
     artists: [{ name: "The Weeknd ft. Daft Punk" }],
     album: {
@@ -192,7 +192,7 @@ const mockTracks = [
     genre: "pop"
   },
   {
-    id: "12",
+    id: "0qcr4m16w1hbIG8gU6t42n",
     name: "Gurenge",
     artists: [{ name: "LiSA" }],
     album: {
@@ -209,7 +209,7 @@ const mockTracks = [
     genre: "j-rock"
   },
   {
-    id: "13",
+    id: "5QDh1m4kr0VjMv1s07t4ea",
     name: "Tomboy",
     artists: [{ name: "HYUKOH" }],
     album: {
@@ -226,7 +226,7 @@ const mockTracks = [
     genre: "korean-indie"
   },
   {
-    id: "14",
+    id: "7ko9P3e2l3U9a4tNf3W46n",
     name: "Hysteria",
     artists: [{ name: "Muse" }],
     album: {
@@ -245,7 +245,7 @@ const mockTracks = [
 
   // HIGH ENERGY / EUPHORIC (High Energy, High Valence)
   {
-    id: "15",
+    id: "4saklk62WsVlPzB2t2M6yE",
     name: "Dynamite",
     artists: [{ name: "BTS" }],
     album: {
@@ -262,7 +262,7 @@ const mockTracks = [
     genre: "k-pop"
   },
   {
-    id: "16",
+    id: "6xV2vG5p2Vw6e7t3b4Xu3u",
     name: "Mi Gente",
     artists: [{ name: "J Balvin & Willy William" }],
     album: {
@@ -279,7 +279,7 @@ const mockTracks = [
     genre: "latin"
   },
   {
-    id: "17",
+    id: "0Ok3tNf3W4650oytZ557t4",
     name: "One More Time",
     artists: [{ name: "Daft Punk" }],
     album: {
@@ -296,7 +296,7 @@ const mockTracks = [
     genre: "electropop"
   },
   {
-    id: "18",
+    id: "3P3pa7lVnZ1wYwX557t4ea",
     name: "Gimme! Gimme! Gimme!",
     artists: [{ name: "ABBA" }],
     album: {
@@ -311,212 +311,6 @@ const mockTracks = [
     tempo: 120,
     language: "sv",
     genre: "swedish"
-  },
-
-  // MIXED LANGUAGES & INSTRUMENTAL MIX
-  {
-    id: "19",
-    name: "Mera Mann Kehna",
-    artists: [{ name: "Falak Shabir" }],
-    album: {
-      name: "Nautanki Saala!",
-      images: [{ url: "https://i.scdn.co/image/ab67616d0000b2736e6ec16ca2114ef8f0b7bc46" }]
-    },
-    preview_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
-    energy: 0.52,
-    valence: 0.6,
-    acousticness: 0.4,
-    instrumentalness: 0.0,
-    tempo: 96,
-    language: "hi",
-    genre: "indian"
-  },
-  {
-    id: "20",
-    name: "Clair de Lune",
-    artists: [{ name: "Claude Debussy" }],
-    album: {
-      name: "Debussy Piano Masterpieces",
-      images: [{ url: "https://i.scdn.co/image/ab67616d0000b273783a30c0daee11a64b4ec0f3" }]
-    },
-    preview_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3",
-    energy: 0.03,
-    valence: 0.28,
-    acousticness: 0.99,
-    instrumentalness: 0.98,
-    tempo: 65,
-    language: "silence",
-    genre: "classical"
-  },
-  {
-    id: "21",
-    name: "Girl from Ipanema",
-    artists: [{ name: "Stan Getz & Astrud Gilberto" }],
-    album: {
-      name: "Getz/Gilberto",
-      images: [{ url: "https://i.scdn.co/image/ab67616d0000b273cd982da642598deef66b02a9" }]
-    },
-    preview_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3",
-    energy: 0.18,
-    valence: 0.62,
-    acousticness: 0.85,
-    instrumentalness: 0.05,
-    tempo: 90,
-    language: "pt",
-    genre: "bossanova"
-  },
-  {
-    id: "22",
-    name: "Je Te Laisse Reculer",
-    artists: [{ name: "Videoclub" }],
-    album: {
-      name: "Euphories",
-      images: [{ url: "https://i.scdn.co/image/ab67616d0000b273e970b1cb3b17726487e491c1" }]
-    },
-    preview_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3",
-    energy: 0.55,
-    valence: 0.72,
-    acousticness: 0.35,
-    instrumentalness: 0.01,
-    tempo: 112,
-    language: "fr",
-    genre: "french"
-  },
-  {
-    id: "23",
-    name: "Tu Jaane Na",
-    artists: [{ name: "Atif Aslam" }],
-    album: {
-      name: "Ajab Prem Ki Ghazab Kahani",
-      images: [{ url: "https://i.scdn.co/image/ab67616d0000b27372d6a59275cb75c1285220b2" }]
-    },
-    preview_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3",
-    energy: 0.42,
-    valence: 0.35,
-    acousticness: 0.65,
-    instrumentalness: 0.0,
-    tempo: 82,
-    language: "hi",
-    genre: "indian"
-  },
-  {
-    id: "24",
-    name: "Lover",
-    artists: [{ name: "Taylor Swift" }],
-    album: {
-      name: "Lover",
-      images: [{ url: "https://i.scdn.co/image/ab67616d0000b273e787c8276ca2c12abde2c1ab" }]
-    },
-    preview_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3",
-    energy: 0.54,
-    valence: 0.45,
-    acousticness: 0.49,
-    instrumentalness: 0.0,
-    tempo: 68,
-    language: "en",
-    genre: "pop"
-  },
-  {
-    id: "25",
-    name: "Despacito",
-    artists: [{ name: "Luis Fonsi ft. Daddy Yankee" }],
-    album: {
-      name: "VIDA",
-      images: [{ url: "https://i.scdn.co/image/ab67616d0000b2734492e59df61783cfb162f4db" }]
-    },
-    preview_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3",
-    energy: 0.8,
-    valence: 0.84,
-    acousticness: 0.2,
-    instrumentalness: 0.0,
-    tempo: 89,
-    language: "es",
-    genre: "latin"
-  },
-  {
-    id: "26",
-    name: "Stay",
-    artists: [{ name: "The Kid LAROI & Justin Bieber" }],
-    album: {
-      name: "F*CK LOVE 3: OVER YOU",
-      images: [{ url: "https://i.scdn.co/image/ab67616d0000b27341e301b5ae3cdab9ec6af422" }]
-    },
-    preview_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-11.mp3",
-    energy: 0.76,
-    valence: 0.65,
-    acousticness: 0.04,
-    instrumentalness: 0.0,
-    tempo: 170,
-    language: "en",
-    genre: "pop"
-  },
-  {
-    id: "27",
-    name: "Rainforest Ambient",
-    artists: [{ name: "Nature Sounds" }],
-    album: {
-      name: "Calm Rain",
-      images: [{ url: "https://i.scdn.co/image/ab67616d0000b273294ee5cfa488426f30e0600a" }]
-    },
-    preview_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-12.mp3",
-    energy: 0.1,
-    valence: 0.2,
-    acousticness: 0.95,
-    instrumentalness: 0.99,
-    tempo: 78,
-    language: "silence",
-    genre: "ambient"
-  },
-  {
-    id: "28",
-    name: "Electric Feel",
-    artists: [{ name: "MGMT" }],
-    album: {
-      name: "Oracular Spectacular",
-      images: [{ url: "https://i.scdn.co/image/ab67616d0000b273934f861e6878e1c668ec0a54" }]
-    },
-    preview_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-13.mp3",
-    energy: 0.8,
-    valence: 0.56,
-    acousticness: 0.06,
-    instrumentalness: 0.3,
-    tempo: 103,
-    language: "en",
-    genre: "indie-pop"
-  },
-  {
-    id: "29",
-    name: "Bailando",
-    artists: [{ name: "Enrique Iglesias" }],
-    album: {
-      name: "SEX AND LOVE",
-      images: [{ url: "https://i.scdn.co/image/ab67616d0000b27318ec72cb3c180905a5a67923" }]
-    },
-    preview_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3",
-    energy: 0.78,
-    valence: 0.78,
-    acousticness: 0.08,
-    instrumentalness: 0.0,
-    tempo: 91,
-    language: "es",
-    genre: "latin"
-  },
-  {
-    id: "30",
-    name: "Midnight City",
-    artists: [{ name: "M83" }],
-    album: {
-      name: "Hurry Up, We're Dreaming",
-      images: [{ url: "https://i.scdn.co/image/ab67616d0000b2730bf183664abdf47b8599443e" }]
-    },
-    preview_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3",
-    energy: 0.72,
-    valence: 0.52,
-    acousticness: 0.02,
-    instrumentalness: 0.25,
-    tempo: 105,
-    language: "silence",
-    genre: "electropop"
   }
 ];
 

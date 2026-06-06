@@ -84,6 +84,23 @@ export const VibeGrid: React.FC<VibeGridProps> = ({ energy, valence, onChange })
     ctx.fillText('MELANCHOLY', 0, 0);
     ctx.restore();
 
+    // Draw Axis Numbers
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
+    ctx.font = '400 9px monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    // X-Axis Numbers: 0.00, 0.50, 1.00
+    ctx.fillText('0.00', 18, height / 2 + 12);
+    ctx.fillText('0.50', width / 2 - 16, height / 2 + 12);
+    ctx.fillText('1.00', width - 18, height / 2 + 12);
+
+    // Y-Axis Numbers: 1.00, 0.50, 0.00
+    ctx.textAlign = 'left';
+    ctx.fillText('1.00', width / 2 + 8, 12);
+    ctx.fillText('0.50', width / 2 + 8, height / 2 - 12);
+    ctx.fillText('0.00', width / 2 + 8, height - 12);
+
     // Calculate current pixel position based on inputs (normalized [0, 1])
     const dotX = energy * width;
     const dotY = (1 - valence) * height; // Invert Y coordinate

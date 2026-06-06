@@ -3,7 +3,7 @@ import type { Track, VibeState } from '../types';
 export const localMockTracks = [
   // CHILL / MELANCHOLIC (Low Energy, Low Valence)
   {
-    id: "1",
+    id: "4MXUO7v0VjML1szEU615v3",
     name: "Rosyln",
     artists: [{ name: "Bon Iver & St. Vincent" }],
     album: {
@@ -19,7 +19,7 @@ export const localMockTracks = [
     language: "en"
   },
   {
-    id: "2",
+    id: "527kCunrRSx6YBv7q7U45Q",
     name: "Gymnopédie No.1",
     artists: [{ name: "Erik Satie" }],
     album: {
@@ -35,7 +35,7 @@ export const localMockTracks = [
     language: "silence"
   },
   {
-    id: "3",
+    id: "2usrT3w4650oytZ557t4ea",
     name: "Intro",
     artists: [{ name: "The xx" }],
     album: {
@@ -51,7 +51,7 @@ export const localMockTracks = [
     language: "silence"
   },
   {
-    id: "4",
+    id: "5SclYw5rUqE75S1W84033C",
     name: "Youth",
     artists: [{ name: "Daughter" }],
     album: {
@@ -69,7 +69,7 @@ export const localMockTracks = [
 
   // CHILL / EUPHORIC (Low Energy, High Valence)
   {
-    id: "6",
+    id: "3r16b04sgol6uB9Vv0M6yE",
     name: "Bossa No Décor",
     artists: [{ name: "João Gilberto" }],
     album: {
@@ -85,7 +85,7 @@ export const localMockTracks = [
     language: "pt"
   },
   {
-    id: "8",
+    id: "18ecf7db11545620b75cf798",
     name: "La Vie En Rose",
     artists: [{ name: "Édith Piaf" }],
     album: {
@@ -101,7 +101,7 @@ export const localMockTracks = [
     language: "fr"
   },
   {
-    id: "9",
+    id: "1wRPtKGflJr4rj2RzcxLAg",
     name: "cold/mess",
     artists: [{ name: "Prateek Kuhad" }],
     album: {
@@ -117,7 +117,7 @@ export const localMockTracks = [
     language: "hi"
   },
   {
-    id: "10",
+    id: "71G1Vcxk2TClI6Vmq3505X",
     name: "Plastic Love",
     artists: [{ name: "Mariya Takeuchi" }],
     album: {
@@ -135,7 +135,7 @@ export const localMockTracks = [
 
   // HIGH ENERGY / MELANCHOLIC (High Energy, Low Valence)
   {
-    id: "11",
+    id: "7a5oOr1321Xv0eQvEovg7K",
     name: "Starboy",
     artists: [{ name: "The Weeknd ft. Daft Punk" }],
     album: {
@@ -151,7 +151,7 @@ export const localMockTracks = [
     language: "en"
   },
   {
-    id: "12",
+    id: "0qcr4m16w1hbIG8gU6t42n",
     name: "Gurenge",
     artists: [{ name: "LiSA" }],
     album: {
@@ -167,7 +167,7 @@ export const localMockTracks = [
     language: "ja"
   },
   {
-    id: "13",
+    id: "5QDh1m4kr0VjMv1s07t4ea",
     name: "Tomboy",
     artists: [{ name: "HYUKOH" }],
     album: {
@@ -183,7 +183,7 @@ export const localMockTracks = [
     language: "ko"
   },
   {
-    id: "14",
+    id: "7ko9P3e2l3U9a4tNf3W46n",
     name: "Hysteria",
     artists: [{ name: "Muse" }],
     album: {
@@ -201,7 +201,7 @@ export const localMockTracks = [
 
   // HIGH ENERGY / EUPHORIC (High Energy, High Valence)
   {
-    id: "15",
+    id: "4saklk62WsVlPzB2t2M6yE",
     name: "Dynamite",
     artists: [{ name: "BTS" }],
     album: {
@@ -217,7 +217,7 @@ export const localMockTracks = [
     language: "ko"
   },
   {
-    id: "16",
+    id: "6xV2vG5p2Vw6e7t3b4Xu3u",
     name: "Mi Gente",
     artists: [{ name: "J Balvin & Willy William" }],
     album: {
@@ -233,7 +233,7 @@ export const localMockTracks = [
     language: "es"
   },
   {
-    id: "17",
+    id: "0Ok3tNf3W4650oytZ557t4",
     name: "One More Time",
     artists: [{ name: "Daft Punk" }],
     album: {
@@ -249,7 +249,7 @@ export const localMockTracks = [
     language: "silence"
   },
   {
-    id: "18",
+    id: "3P3pa7lVnZ1wYwX557t4ea",
     name: "Gimme! Gimme! Gimme!",
     artists: [{ name: "ABBA" }],
     album: {
@@ -272,7 +272,6 @@ export const filterLocalMock = (vibe: VibeState): Track[] => {
   const targetColorTemp = vibe.colorTemp;
   const targetLanguage = vibe.language;
 
-  // Base BPM
   const baseBpm = 70 + targetColorTemp * 85;
 
   let acousticVal = 0.5;
