@@ -80,6 +80,12 @@ export const GeometricVisualizer: React.FC<GeometricVisualizerProps> = ({ vibe }
     let time = 0;
 
     const render = () => {
+      // Prevent canvas stretching by matching internal coordinates to CSS display size
+      if (canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight) {
+        canvas.width = canvas.clientWidth;
+        canvas.height = canvas.clientHeight;
+      }
+
       time += 0.02 * (0.3 + vibe.energy * 1.7);
       
       const width = canvas.width;
@@ -275,7 +281,7 @@ export const GeometricVisualizer: React.FC<GeometricVisualizerProps> = ({ vibe }
     const handleResize = () => {
       const rect = container.getBoundingClientRect();
       canvas.width = rect.width;
-      canvas.height = 180; // Set explicit height for panel visualizer
+      canvas.height = 120; // Set explicit height for panel visualizer
     };
 
     handleResize();
@@ -293,7 +299,7 @@ export const GeometricVisualizer: React.FC<GeometricVisualizerProps> = ({ vibe }
           CLICK INTERFACE TO STIMULATE
         </span>
       </div>
-      <div ref={containerRef} className="border border-red-950 bg-black overflow-hidden relative cursor-pointer" style={{ height: '180px' }}>
+      <div ref={containerRef} className="border border-red-950 bg-black overflow-hidden relative cursor-pointer" style={{ height: '120px' }}>
         <canvas
           ref={canvasRef}
           onClick={handleCanvasClick}
