@@ -1011,6 +1011,26 @@ header.sticky-header {
   padding-left: 10px;
 }
 
+/* 🌀 Infinite Looping Marquee Scrolling */
+.carousel-list.marquee {
+  display: flex;
+  width: max-content;
+  animation: marqueeScroll 28s linear infinite;
+}
+
+.carousel-list.marquee:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marqueeScroll {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
 .carousel-item {
   flex: 0 0 160px;
   width: 160px;

@@ -21,6 +21,7 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
   
   // YouTube player states
   const [youtubeVideoId, setYoutubeVideoId] = useState<string | null>(null);
+  const [youtubeThumbnails, setYoutubeThumbnails] = useState<Record<string, string>>({});
   const [showExportModal, setShowExportModal] = useState(false);
   const [exportName, setExportName] = useState('My Vibe Playlist');
   const [exportingPlaylist, setExportingPlaylist] = useState(false);
@@ -61,6 +62,32 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
         });
     }
   }, [activeTrack]);
+
+  // Query YouTube Video IDs in bulk for all tracks in the playlist to use as artwork thumbnails
+  useEffect(() => {
+    if (tracks.length > 0) {
+      const payload = tracks.map(t => ({
+        name: t.name,
+        artist: t.artists.map(a => a.name).join(' ')
+      }));
+      axios.post('http://localhost:3001/api/youtube/playlist', { tracks: payload })
+        .then(res => {
+          if (res.data.videoIds && Array.isArray(res.data.videoIds)) {
+            const newMapping: Record<string, string> = {};
+            tracks.forEach((track, index) => {
+              const id = res.data.videoIds[index];
+              if (id) {
+                newMapping[track.id] = id;
+              }
+            });
+            setYoutubeThumbnails(newMapping);
+          }
+        })
+        .catch(err => {
+          console.error("Failed to load bulk YouTube thumbnails:", err);
+        });
+    }
+  }, [tracks]);
 
   // Handle Play/Pause of preview audio
   const handleTrackClick = (track: Track) => {
@@ -205,19 +232,28 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
         <>
           <div className="carousel-container flex-grow">
             <div className="carousel-wrap">
-              <div className="carousel-list">
-                {tracks.map((track, idx) => {
-                  const catalogCode = `TT-${String(44 - idx).padStart(2, '0')}`;
+              <div className="carousel-list marquee">
+                {(tracks.length >= 4 ? [...tracks, ...tracks] : [...tracks, ...tracks, ...tracks, ...tracks]).map((track, idx) => {
+                  const catalogCode = `TT-${String(44 - (idx % tracks.length)).padStart(2, '0')}`;
                   const isCurrentPlaying = activeTrack?.id === track.id && isPlaying;
+                  const artworkUrl = track.album.images?.[0]?.url;
+                  const hasValidSpotifyArt = artworkUrl && !artworkUrl.includes('placeholder') && !artworkUrl.includes('mock');
+                  
                   return (
                     <div
-                      key={track.id}
+                      key={`${track.id}-${idx}`}
                       onClick={() => handleTrackClick(track)}
                       className={`carousel-item ${activeTrack?.id === track.id ? 'active' : ''} ${isCurrentPlaying ? 'playing' : ''}`}
                     >
                       <div className="carousel-artwork-link">
-                        {track.album.images?.[0] ? (
-                          <img src={track.album.images[0].url} alt={track.name} className="carousel-img" />
+                        {hasValidSpotifyArt ? (
+                          <img src={artworkUrl} alt={track.name} className="carousel-img" />
+                        ) : youtubeThumbnails[track.id] ? (
+                          <img 
+                            src={`https://img.youtube.com/vi/${youtubeThumbnails[track.id]}/hqdefault.jpg`} 
+                            alt={track.name} 
+                            className="carousel-img" 
+                          />
                         ) : (
                           <div className="w-full h-full bg-slate-900 flex items-center justify-center">
                             <Music size={24} className="text-slate-700" />
