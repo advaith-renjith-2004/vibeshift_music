@@ -1,4 +1,4 @@
-# 🌀 VibeShift — Synesthetic Music Discovery Platform
+# VibeShift — Synesthetic Music Discovery Platform
 
 > **Control the canvas. Shift the vibe. Hear the visuals.**
 
@@ -8,7 +8,7 @@ Have you ever wondered what your mood looks like, or wanted to generate a playli
 
 ---
 
-## 🎨 The Synesthetic Experience
+## The Synesthetic Experience
 
 VibeShift is built on the concept of **synesthesia**—the crossing of sensory pathways. Instead of searching for tracks using static text inputs, you interact with a digital blueprint console:
 * **The Vibe Grid:** A 2D interactive canvas where you plot your state of mind. Drag your cursor between *Chill vs. High Energy* and *Melancholic vs. Euphoric*.
@@ -18,19 +18,19 @@ VibeShift is built on the concept of **synesthesia**—the crossing of sensory p
 
 ---
 
-## 🚀 Core Features
+## Core Features
 
 * **Interactive 2D Canvas Controls:** Drag and plot coordinates to fine-tune your energy.
 * **Dynamic YouTube Streaming Engine:** Integrated scraper that bypasses complex authentication to match and load track streams instantly.
 * **Custom Iframe Controller:** Built with a clean `postMessage` listener to play, pause, skip, and manage audio tracks smoothly.
-* **Custom Themes & Spectra:** Select from five retro-futuristic themes (`rose`, `cyan`, `emerald`, `purple`, `parchment`) or design your own custom color spectrum.
+* **Custom Themes & Spectra:** Select from five retro-futuristic themes (rose, cyan, emerald, purple, parchment) or design your own custom color spectrum.
 * **Cyberpunk Avatars:** Choose your identity from a set of retro avatars (DJ, Cyber Cat, Retro Robot, Explorer, Pixel Ghost).
 * **Community Gallery:** Publish your custom mood states and playlists to Firestore for other users to load and play.
 * **Installable PWA:** Fully configured Progressive Web App—install it directly to your mobile home screen or desktop dock for standalone access.
 
 ---
 
-## 💻 Tech Stack & Architecture
+## Tech Stack & Architecture
 
 VibeShift is organized as a lightweight monorepo:
 
@@ -47,7 +47,7 @@ VibeShift is organized as a lightweight monorepo:
 
 ---
 
-## 🛠️ Local Setup & Quick Start
+## Local Setup & Quick Start
 
 Getting VibeShift running on your local machine is simple. 
 
@@ -67,11 +67,11 @@ npm run dev
 ```
 
 Now, open your browser and navigate to:  
-👉 **`http://localhost:5173`**
+**`http://localhost:5173`**
 
 ---
 
-## ☁️ Deployment
+## Deployment
 
 ### Firebase Hosting
 To build the static assets and deploy to Firebase Hosting:
@@ -91,4 +91,4 @@ firebase deploy --only functions
 
 ---
 
-*Created with 💖 by [Advaith](https://github.com/advaith-renjith-2004)*
+*Created by [Advaith](https://github.com/advaith-renjith-2004)*
