@@ -2,6 +2,8 @@
 
 > **Control the canvas. Shift the vibe. Hear the visuals.**
 
+**Live Demo Website:** [https://vibeshift-f5275.web.app](https://vibeshift-f5275.web.app)
+
 Welcome to **VibeShift**! A visual and auditory playground designed to bridge the gap between human mood, aesthetics, and music. 
 
 Have you ever wondered what your mood looks like, or wanted to generate a playlist simply by selecting a color temperature or setting a weather pattern? VibeShift turns this synesthetic experience into a playable web application.
