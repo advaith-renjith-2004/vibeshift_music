@@ -299,12 +299,24 @@ export const PlaylistView: React.FC<PlaylistViewProps> = ({
                     >
                       <div className="carousel-artwork-link">
                         {hasValidSpotifyArt ? (
-                          <img src={artworkUrl} alt={track.name} className="carousel-img" />
+                          <img 
+                            src={artworkUrl} 
+                            alt={track.name} 
+                            className="carousel-img" 
+                            onError={(e) => {
+                              e.currentTarget.onerror = null;
+                              e.currentTarget.src = 'https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=300&auto=format&fit=crop&q=60';
+                            }}
+                          />
                         ) : youtubeThumbnails[track.id] ? (
                           <img 
                             src={`https://img.youtube.com/vi/${youtubeThumbnails[track.id]}/hqdefault.jpg`} 
                             alt={track.name} 
                             className="carousel-img" 
+                            onError={(e) => {
+                              e.currentTarget.onerror = null;
+                              e.currentTarget.src = 'https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=300&auto=format&fit=crop&q=60';
+                            }}
                           />
                         ) : (
                           <div className="w-full h-full bg-slate-900 flex items-center justify-center">
