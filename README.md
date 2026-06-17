@@ -2,7 +2,9 @@
 
 > **Control the canvas. Shift the vibe. Hear the visuals.**
 
-**Live Demo Website:** [https://vibeshift-f5275.web.app](https://vibeshift-f5275.web.app)
+![VibeShift Console Preview](./vibeshift_preview.png)
+
+**Live Demo Website:** [https://vibeshift-music-4q94-pi.vercel.app](https://vibeshift-music-4q94-pi.vercel.app)
 
 Welcome to **VibeShift**! A visual and auditory playground designed to bridge the gap between human mood, aesthetics, and music. 
 
