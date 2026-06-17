@@ -2,7 +2,7 @@
 
 > **Control the canvas. Shift the vibe. Hear the visuals.**
 
-![VibeShift Console Preview](./vibeshift_preview.png)
+![VibeShift Console Preview](./frontend/public/preview.png)
 
 **Live Demo Website:** [https://vibeshift-music-4q94-pi.vercel.app](https://vibeshift-music-4q94-pi.vercel.app)
 
