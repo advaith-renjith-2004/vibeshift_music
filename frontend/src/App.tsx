@@ -40,7 +40,7 @@ export default function App() {
   });
 
   const [tracks, setTracks] = useState<Track[]>([]);
-  const [source, setSource] = useState<'spotify_api' | 'simulated_database'>('simulated_database');
+  const [source, setSource] = useState<'spotify_api' | 'simulated_database' | 'youtube_live'>('simulated_database');
   const [loading, setLoading] = useState(false);
 
   const [gallery, setGallery] = useState<GalleryItem[]>([]);
@@ -381,7 +381,7 @@ export default function App() {
       }
 
       setTracks(response.data.tracks);
-      setSource(response.data.source as 'spotify_api' | 'simulated_database');
+      setSource(response.data.source as 'spotify_api' | 'simulated_database' | 'youtube_live');
     } catch (error) {
       console.warn("Backend API request failed. Using local client fallback:", error);
       const clientMockTracks = filterLocalMock(currentVibe);
