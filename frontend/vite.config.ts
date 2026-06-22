@@ -132,5 +132,9 @@ export default defineConfig({
         type: 'module'
       }
     })
-  ]
+  ],
+  build: {
+    outDir: '../dist',
+    emptyOutDir: true
+  }
 })
