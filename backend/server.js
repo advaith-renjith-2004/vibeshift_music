@@ -61,7 +61,69 @@ function extractVideoRenderers(obj, results = []) {
   return results;
 }
 
+function formatDuration(seconds) {
+  if (!seconds) return "";
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+}
+
+async function getHealthyInvidiousInstances() {
+  try {
+    const res = await axios.get('https://api.invidious.io/instances.json', { timeout: 4000 });
+    if (Array.isArray(res.data)) {
+      const active = res.data.filter(inst => {
+        const info = inst[1];
+        return info && info.type === 'https' && info.monitor && info.monitor.down === false;
+      });
+      active.sort((a, b) => (b[1].monitor.uptime || 0) - (a[1].monitor.uptime || 0));
+      return active.map(inst => inst[1].uri);
+    }
+  } catch (err) {
+    console.warn("[Invidious API] Failed to fetch instances list:", err.message);
+  }
+  return [
+    "https://inv.thepixora.com",
+    "https://invidious.yewtu.be",
+    "https://invidious.nerdvpn.de",
+    "https://inv.tux.im"
+  ];
+}
+
 async function searchYouTubeVideos(query, maxResults = 20) {
+  // ATTEMPT 1: Try Invidious instances API search
+  console.log(`[YouTube Search] Searching via Invidious API for "${query}"...`);
+  const instances = await getHealthyInvidiousInstances();
+  
+  for (const baseUri of instances) {
+    try {
+      const searchUrl = `${baseUri}/api/v1/search?q=${encodeURIComponent(query)}&type=video`;
+      console.log(`[YouTube Search] Trying Invidious instance: ${baseUri}`);
+      const response = await axios.get(searchUrl, {
+        headers: {
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+        },
+        timeout: 6000
+      });
+      
+      if (Array.isArray(response.data) && response.data.length > 0) {
+        console.log(`[YouTube Search] Invidious instance ${baseUri} succeeded! Found ${response.data.length} results.`);
+        return response.data.slice(0, maxResults).map(v => {
+          const videoId = v.videoId;
+          const title = v.title || "Unknown Title";
+          const artist = v.author || "Unknown Artist";
+          const thumbnail = videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : "";
+          const durationText = formatDuration(v.lengthSeconds);
+          return { videoId, title, artist, thumbnail, durationText };
+        });
+      }
+    } catch (err) {
+      console.warn(`[YouTube Search] Invidious instance ${baseUri} failed:`, err.message);
+    }
+  }
+
+  // ATTEMPT 2: Fallback to HTML scraping (local fallback)
+  console.log(`[YouTube Search] Falling back to HTML scraping for "${query}"...`);
   try {
     const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
     const response = await axios.get(searchUrl, {
@@ -79,7 +141,6 @@ async function searchYouTubeVideos(query, maxResults = 20) {
     const dataStart = html.indexOf("{", startIdx);
     if (dataStart === -1) return [];
 
-    // Extract the JSON object character-by-character (brace balance)
     let depth = 0;
     let jsonStr = "";
     for (let i = dataStart; i < Math.min(html.length, dataStart + 3_000_000); i++) {
@@ -102,10 +163,8 @@ async function searchYouTubeVideos(query, maxResults = 20) {
       const videoId = r.videoId;
       const title = r.title?.runs?.[0]?.text || "Unknown Title";
       const artist = r.ownerText?.runs?.[0]?.text || "Unknown Artist";
-      // Prefer hq720 thumbnail, fallback to first available
       const thumbs = r.thumbnail?.thumbnails || [];
       const thumbnail = thumbs[thumbs.length - 1]?.url || (videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : "");
-      // Duration in seconds (may be absent)
       const durationText = r.lengthText?.simpleText || "";
 
       return { videoId, title, artist, thumbnail, durationText };
@@ -758,6 +817,26 @@ app.post("/api/playlist/create", async (req, res) => {
 // YOUTUBE SINGLE VIDEO SEARCH (for current playing track embed)
 // ─────────────────────────────────────────────────────────────────────────────
 async function searchYouTubeVideoId(query) {
+  // Try Invidious search first
+  const instances = await getHealthyInvidiousInstances();
+  for (const baseUri of instances) {
+    try {
+      const searchUrl = `${baseUri}/api/v1/search?q=${encodeURIComponent(query)}&type=video`;
+      const response = await axios.get(searchUrl, {
+        headers: {
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+        },
+        timeout: 4500
+      });
+      if (Array.isArray(response.data) && response.data.length > 0 && response.data[0].videoId) {
+        return response.data[0].videoId;
+      }
+    } catch (err) {
+      console.warn(`[YouTube Single Search] Invidious instance ${baseUri} failed:`, err.message);
+    }
+  }
+
+  // Fallback to HTML scraper
   try {
     const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
     const response = await axios.get(searchUrl, {
